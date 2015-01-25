@@ -61,9 +61,9 @@ module SchemaMonkey
             stream.write "  create_table #{pname.inspect}"
             stream.write ", #{options}" unless options.blank?
             stream.puts " do |t|"
-            typelen = @columns.map{|col| col.type.length}.max
-            namelen = @columns.map{|col| col.name.length}.max
-            @columns.each do |column|
+            typelen = columns.map{|col| col.type.length}.max
+            namelen = columns.map{|col| col.name.length}.max
+            columns.each do |column|
               stream.write "    "
               column.assemble(stream, typelen, namelen)
               stream.puts ""
@@ -139,7 +139,7 @@ module SchemaMonkey
         Middleware::Dumper::Extensions.start dumper: self, connection: @connection, extensions: @dump.extensions do |env|
           stream = StringIO.new
           extensions_without_schema_monkey(stream)
-          @dump.extensions << stream.string unless stream.string.blank?
+          env.dump.extensions << stream.string unless stream.string.blank?
         end
       end
 
