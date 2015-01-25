@@ -14,13 +14,13 @@ module SchemaMonkey
         end
 
         def indexes_with_schema_monkey(table_name, query_name=nil)
-          Middleware::Query::Indexes.start connection: self, table_name: table_name, query_name: query_name do |env|
+          Middleware::Query::Indexes.start connection: self, table_name: table_name, query_name: query_name, index_definitions: [] do |env|
             env.index_definitions += indexes_without_schema_monkey env.table_name, env.query_name
           end
         end
 
         def tables_with_schema_monkey(query_name=nil, database=nil, like=nil)
-          Middleware::Query::Tables.start connection: self, query_name: query_name, database: database, like: like do |env|
+          Middleware::Query::Tables.start connection: self, query_name: query_name, database: database, like: like, tables: [] do |env|
             env.tables += tables_without_schema_monkey env.query_name, env.database, env.like
           end
         end

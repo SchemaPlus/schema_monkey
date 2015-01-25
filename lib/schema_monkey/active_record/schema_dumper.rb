@@ -48,7 +48,14 @@ module SchemaMonkey
           @dependencies[tablename].sort.uniq.reject{|t| @dumper.ignored? t}.each(&block)
         end
 
-        class Table < KeyStruct[:name, :pname, :options, :columns, statements: [], trailer: []]
+        class Table < KeyStruct[:name, :pname, :options, :columns, :indexes, :statements, :trailer]
+          def initialize(*args)
+            super
+            self.columns ||= []
+            self.indexes ||= []
+            self.statements ||= []
+            self.trailer ||= []
+          end
 
           def assemble(stream)
             stream.write "  create_table #{pname.inspect}"

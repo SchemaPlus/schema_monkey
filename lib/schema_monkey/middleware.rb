@@ -48,12 +48,12 @@ module SchemaMonkey
         extend Stack
         # :database and :like are only for mysql
         # :table_name is only for sqlite3
-        Env = KeyStruct[:connection, :query_name, :table_name, :database, :like, tables: []]
+        Env = KeyStruct[:connection, :query_name, :table_name, :database, :like, :tables]
       end
 
       module Indexes
         extend Stack
-        Env = KeyStruct[:connection, :table_name, :query_name, index_definitions: []]
+        Env = KeyStruct[:connection, :table_name, :query_name, :index_definitions]
       end
     end
 
