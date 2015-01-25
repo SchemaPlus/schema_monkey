@@ -39,9 +39,9 @@ module SchemaMonkey
       modules << parent if opts.and_self
       modules += parent.constants.reject{|c| parent.autoload? c}.map{|c| parent.const_get(c)}.select(&it.is_a?(Module))
       modules.reject! &it.to_s =~ opts.reject if opts.reject
+      modules += modules.flat_map { |mod| get_modules(mod, reject: opts.reject, recursive: true) } if opts.recursive
       modules.select! &it.to_s =~ opts.match if opts.match
       modules.select! &it.respond_to?(opts.respond_to) if opts.respond_to
-      modules += modules.flat_map { |mod| get_modules(mod, opts.except(:prefix, :and_self)) } if opts.recursive
       modules
     end
   end
