@@ -58,10 +58,3 @@ Some things to know about to help you develop and test:
 
   The matrix of configurations is specified in `schema_dev.yml` in
   the project root.
-
-* **schema_monkey**: schema_monkey extends ActiveRecord using
-  [schema_monkey](https://github.com/SchemaPlus/schema_monkey)'s extension
-  API and protocols -- see its README for details.  If your contribution needs any additional monkey patching
-  that isn't already supported by
-  [schema_monkey](https://github.com/SchemaPlus/schema_monkey), please head
-  over there and submit a PR.
