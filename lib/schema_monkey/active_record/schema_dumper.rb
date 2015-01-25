@@ -72,6 +72,11 @@ module SchemaMonkey
               stream.puts "    #{statement}"
             end
             stream.puts "  end"
+            indexes.each do |index|
+              stream.write "  add_index #{pname.inspect}, "
+              index.assemble(stream)
+              stream.puts ""
+            end
             trailer.each do |statement|
               stream.puts "  #{statement}"
             end
@@ -102,6 +107,21 @@ module SchemaMonkey
               stream.write "# #{comments}" unless comments.blank?
             end
           end
+
+          class Index < KeyStruct[:name, :columns, :options]
+
+            def add_option(option)
+              self.options = [options, option].reject(&:blank?).join(', ')
+            end
+
+            def assemble(stream)
+              stream.write [
+                columns.inspect,
+                "name: #{name.inspect}",
+                options
+              ].reject(&:blank?).join(", ")
+            end
+          end
         end
       end
 
@@ -113,6 +133,7 @@ module SchemaMonkey
           alias_method_chain :table, :schema_monkey
           alias_method_chain :foreign_keys, :schema_monkey
           alias_method_chain :trailer, :schema_monkey
+          alias_method_chain :indexes, :schema_monkey
           public :ignored?
         end
       end
@@ -178,6 +199,26 @@ module SchemaMonkey
             $
             }x
             Dump::Table::Column.new(name: m[:name], type: m[:type], options: m[:options])
+          }
+        end
+      end
+
+      def indexes_with_schema_monkey(table, _)
+        Middleware::Dumper::Indexes.start dumper: self, connection: @connection, dump: @dump, table: @dump.tables[table] do |env|
+          stream = StringIO.new
+          indexes_without_schema_monkey(env.table.name, stream)
+          env.table.indexes += stream.string.split("\n").map { |string|
+            m = string.strip.match %r{
+              ^
+              add_index \s*
+              [:'"](?<table>[^'"\s]+)['"]? \s* , \s*
+              (?<columns>.*) \s*
+              name: \s* [:'"](?<name>[^'"\s]+)['"]? \s*
+              (, \s* (?<options>.*))?
+              $
+            }x
+            columns = m[:columns].tr(%q{[]'":}, '').strip.split(/\s*,\s*/)
+            Dump::Table::Index.new name: m[:name], columns: columns, options: m[:options]
           }
         end
       end

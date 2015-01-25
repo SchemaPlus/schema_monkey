@@ -95,6 +95,10 @@ module SchemaMonkey
         extend Stack
         Env = KeyStruct[:dumper, :connection, :dump, :table]
       end
+      module Indexes
+        extend Stack
+        Env = KeyStruct[:dumper, :connection, :dump, :table]
+      end
     end
 
     module Model
