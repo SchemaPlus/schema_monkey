@@ -3,7 +3,7 @@
 [![Coverage Status](https://img.shields.io/coveralls/SchemaPlus/schema_monkey.svg)](https://coveralls.io/r/SchemaPlus/schema_monkey)
 [![Dependency Status](https://gemnasium.com/lomba/schema_monkey.svg)](https://gemnasium.com/SchemaPlus/schema_monkey)
 
-# schema_monkey
+# SchemaMonkey
 
 SchemaMonkey is a behind-the-scenes gem to facilitate writing other gems that extend ActiveRecord.  It provides:
 
@@ -16,7 +16,15 @@ SchemaMonkey is a behind-the-scenes gem to facilitate writing other gems that ex
 The middleware interface has two benefits: it provides a clean API so that the client gems don't need to monkey-patch ActiveRecord (SchemaMonkey does all the monkey-patching for you), and it lets the client gems operate in parallel without concern about conflicting monkey-patches.
 
 
+## Installation
 
+In your gem's `gemspec`, specify a dependency:
+
+```ruby
+spec.add_dependency "schema_monkey", "~> <MAJOR>.<MINOR>", ">= <MAJOR>.<MINOR>.<PATCH>"
+```
+
+SchemaMonkey follows semantic versioning; it's a good idea to explicitly use the `~>` and `>=` dependencies to make sure your gem's clients don't accidentally pull in a version of SchemaMonkey that your gem isn't compatible with.
 
 ## Compatibility
 
