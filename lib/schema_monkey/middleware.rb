@@ -85,7 +85,7 @@ module SchemaMonkey
     module Dumper
       module Extensions
         extend Stack
-        Env = KeyStruct[:dumper, :connection, :extensions]
+        Env = KeyStruct[:dumper, :connection, :dump, :extensions]
       end
       module Tables
         extend Stack

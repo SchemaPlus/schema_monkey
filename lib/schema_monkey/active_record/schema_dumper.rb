@@ -157,7 +157,7 @@ module SchemaMonkey
       end
 
       def extensions_with_schema_monkey(_)
-        Middleware::Dumper::Extensions.start dumper: self, connection: @connection, extensions: @dump.extensions do |env|
+        Middleware::Dumper::Extensions.start dumper: self, connection: @connection, dump: @dump, extensions: @dump.extensions do |env|
           stream = StringIO.new
           extensions_without_schema_monkey(stream)
           env.dump.extensions << stream.string unless stream.string.blank?
