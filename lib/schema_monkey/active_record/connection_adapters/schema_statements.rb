@@ -69,11 +69,9 @@ module SchemaMonkey
               alias_method_chain :add_index, :schema_monkey
             end
           end
-          def add_index_with_schema_monkey(table_name, column_names, options={})
-            if column_names.is_a? Hash and options.empty?
-                options = column_names
-                column_names = nil
-            end
+          def add_index_with_schema_monkey(*args)
+            options = args.extract_options!
+            table_name, column_names = args
             Middleware::Migration::Index.start caller: self, operation: :add, table_name: table_name, column_names: column_names, options: options.deep_dup do |env|
               add_index_without_schema_monkey env.table_name, env.column_names, env.options
             end

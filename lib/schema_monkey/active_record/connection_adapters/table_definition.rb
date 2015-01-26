@@ -29,7 +29,9 @@ module SchemaMonkey
           end
         end
 
-        def index_with_schema_monkey(column_name, options = {})
+        def index_with_schema_monkey(*args)
+          options = args.extract_options!
+          column_name = args.first
           Middleware::Migration::Index.start caller: self, operation: :define, table_name: self.name, column_names: column_name, options: options.deep_dup do |env|
             index_without_schema_monkey env.column_names, env.options
           end
