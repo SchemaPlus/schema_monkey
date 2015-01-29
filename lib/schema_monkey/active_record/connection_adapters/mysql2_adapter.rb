@@ -1,7 +1,7 @@
 module SchemaMonkey
   module ActiveRecord
     module ConnectionAdapters
-      module MysqlAdapter
+      module Mysql2Adapter
 
         def self.included(base)
           base.class_eval do

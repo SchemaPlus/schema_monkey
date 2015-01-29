@@ -11,12 +11,11 @@ module SchemaMonkey
 
           dbm = case adapter_name
                 when /^MySQL/i                 then :Mysql
-                when 'PostgreSQL', 'PostGIS'   then :Postgresql
-                when 'SQLite'                  then :Sqlite3
+                when 'PostgreSQL', 'PostGIS'   then :PostgreSQL
+                when 'SQLite'                  then :SQLite3
                 end
 
-          SchemaMonkey.include_adapters(self.class, dbm)
-          SchemaMonkey.insert_middleware(dbm)
+          SchemaMonkey.insert(dbm: dbm)
         end
 
         module SchemaCreation
