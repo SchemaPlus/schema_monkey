@@ -13,7 +13,8 @@ require_relative "schema_monkey/active_record/connection_adapters/table_definiti
 require_relative 'schema_monkey/active_record/connection_adapters/schema_statements'
 require_relative 'schema_monkey/active_record/migration/command_recorder'
 require_relative 'schema_monkey/active_record/schema_dumper'
-require_relative 'schema_monkey/railtie' if defined?(Rails::Railtie)
+require_relative 'schema_monkey/rails' if defined?(Rails)
+require_relative 'schema_monkey/rake'
 
 module SchemaMonkey
   extend Module
