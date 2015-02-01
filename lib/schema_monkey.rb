@@ -2,6 +2,7 @@ require 'hash_keyword_args'
 require 'its-it'
 require 'key_struct'
 require 'middleware'
+require 'active_record'
 require 'active_support/core_ext/string'
 
 require_relative "schema_monkey/client"
@@ -13,7 +14,6 @@ require_relative "schema_monkey/active_record/connection_adapters/table_definiti
 require_relative 'schema_monkey/active_record/connection_adapters/schema_statements'
 require_relative 'schema_monkey/active_record/migration/command_recorder'
 require_relative 'schema_monkey/active_record/schema_dumper'
-require_relative 'schema_monkey/rails' if defined?(Rails)
 require_relative 'schema_monkey/rake'
 
 module SchemaMonkey
