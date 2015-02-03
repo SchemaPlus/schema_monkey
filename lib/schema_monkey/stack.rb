@@ -15,7 +15,7 @@ module SchemaMonkey
 
     def append(mod)
       hook = Hook.new(self, mod)
-      @hooks.last.next = hook if @hooks.any?
+      @hooks.last._next = hook if @hooks.any?
       @hooks << hook
     end
 
@@ -27,7 +27,7 @@ module SchemaMonkey
         hook.before env if hook.respond_to? :before
       end
 
-      @hooks.first.call(env) if @hooks.any?
+      @hooks.first._call(env)
 
       @hooks.each do |hook|
         hook.after env if hook.respond_to? :after
@@ -47,26 +47,26 @@ module SchemaMonkey
     end
 
     class Hook
-      attr_accessor :next
+      attr_accessor :_next
 
       def initialize(stack, mod)
         @stack = stack
         singleton_class.send :include, mod
       end
 
-      def call(env)
+      def _call(env)
         if respond_to? :around
           around(env) { |env|
-            continue env
+            _continue env
           }
         else
-          continue env
+          _continue env
         end
       end
 
-      def continue(env)
-        if self.next
-          self.next.call(env)
+      def _continue(env)
+        if self._next
+          self._next._call(env)
         else
           @stack.call_implementation(env)
         end
@@ -75,6 +75,7 @@ module SchemaMonkey
 
     module StartMethod
       attr_reader :stack
+
       def start(env, &block)
         stack.start(env, &block)
       end
