@@ -11,7 +11,6 @@ SchemaMonkey is a behind-the-scenes gem to facilitate writing extensions to Acti
 
 * A convention-based protocol for `include`'ing custom modules into ActiveRecord.  You just define your modules and SchemaMonkey will automatically include them in the right places.
 
-* (If you're using Rails) It takes care of setting up a Railtie appropriately to invoke the extensions.
 
 The middleware interface has two benefits: it provides a clean API so that the gem or aplication code doesn't need to monkey-patch ActiveRecord (SchemaMonkey does all the monkey-patching for you), and it lets multiple client gems operate in parallel without concern about conflicting monkey-patches.
 
@@ -30,6 +29,14 @@ gem "schema_monkey", "~> <MAJOR>.<MINOR>", ">= <MAJOR>.<MINOR>.<PATCH>"
 
 SchemaMonkey follows semantic versioning; it's a good idea to explicitly use the `~>` and `>=` dependencies to make sure your gem's clients don't accidentally pull in a version of SchemaMonkey that your gem isn't compatible with.
 
+To use with a rails app, also include
+
+```ruby
+gem "schema_monkey_rails"
+```
+
+which creates a Railtie to insert SchemaMonkey appropriately into the rails stack.
+
 ## Compatibility
 
 SchemaMonkey is tested on:
@@ -44,7 +51,7 @@ SchemaMonkey is tested on:
 ## Usage
 
 
-**Sorry -- no real documentation yet.  Too much is still in flux.**
+**Sorry -- no real documentation yet. See examples in [schema_plus_indexes](https://github/SchemaPlus/schema_plus_indexes) and [schema_plus_pg_indexes](https://github/SchemaPlus/schema_plus_pg_indexes)**
 
 
 
@@ -55,7 +62,13 @@ the standard protocol: fork, feature branch, develop, push, and issue pull reque
 
 Some things to know about to help you develop and test:
 
-* **Ugh -- not many specs yet.  SchemaMonkey is currently tested indirectly by testing the client gems that use it.  Working on it...**
+* SchemaMonkey is a wrapper around two subparts:
+
+  * `SchemaMonkey::Tool` provides the convention-based mechanism for registering clients that extend ActiveRecord using `include`'s and middleware.
+  
+  * `SchemaMonkey::CoreExtensions` defines the ActiveRecord extension API. It is itself just the first client registered with `SchemaMonkey::Tool`.  **Ugh. Currently no specs for `SchemaMonkey::CoreExtensions`;  testing indirectly by testing the client gems that use it.  Working on it...**
+
+  One day might actually split these into separate gems to decouple their development and testing.  And actually the middleware mechanism of `SchemaMonkey::Tool` could be a split out separate gem.
 
 * **schema_dev**:  SchemaMonkey uses [schema_dev](https://github.com/SchemaPlus/schema_dev) to
   facilitate running rspec tests on the matrix of ruby, rails, and database
