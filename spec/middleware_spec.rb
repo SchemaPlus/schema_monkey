@@ -27,13 +27,13 @@ describe SchemaMonkey::Middleware do
 
         Given { SchemaMonkey.register make_client(1) }
 
-        Then { expect(env.result).to eq [:before1, :around_pre1, :implementation1, :around_post1, :after1 ] }
+        Then { expect(env.result).to eq [:before1, :around_pre1, :implement1, :around_post1, :after1 ] }
 
         context "if register client2" do
 
           Given { SchemaMonkey.register make_client(2) }
 
-          Then { expect(env.result).to eq [:before1, :before2, :around_pre1, :around_pre2, :implementation2, :around_post2, :around_post1, :after1, :after2 ] }
+          Then { expect(env.result).to eq [:before1, :before2, :around_pre1, :around_pre2, :implement2, :around_post2, :around_post1, :after1, :after2 ] }
         end
       end
     end
@@ -84,8 +84,8 @@ describe SchemaMonkey::Middleware do
               env.result << :"around_post#{n}"
             end
 
-            def implementation(env)
-              env.result << :"implementation#{n}"
+            def implement(env)
+              env.result << :"implement#{n}"
             end
           end
         end

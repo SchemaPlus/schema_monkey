@@ -8,7 +8,7 @@ module SchemaMonkey::Tool
     end
 
     def self.is_hook?(mod)
-      return true if (mod.instance_methods & [:before, :around, :after, :implementation]).any?
+      return true if (mod.instance_methods & [:before, :around, :after, :implement]).any?
       return true if Module.const_lookup mod, "ENV"
       false
     end
@@ -37,8 +37,8 @@ module SchemaMonkey::Tool
     end
 
     def call_implementation(env)
-      if hook = @hooks.select(&it.respond_to?(:implementation)).last
-        hook.implementation(env)
+      if hook = @hooks.select(&it.respond_to?(:implement)).last
+        hook.implement(env)
       elsif @implementation
         @implementation.call env
       else
