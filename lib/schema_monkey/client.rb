@@ -32,16 +32,10 @@ module SchemaMonkey
       find_modules(:Middleware, dbm: opts.dbm).each do |mod|
         next if @inserted[mod]
 
+        stack_path = mod.to_s.sub(/^#{@root}::Middleware::/, '')
+        stack_path.sub!(/\b#{opts.dbm}\b/i).sub(/::::/, '::') if opts.dbm
 
-        stackpath = mod.to_s.sub(/^#{@root}::Middleware::/, '').to_s.split('::')
-        stackpath.reject!(&it =~ /^#{opts.dbm}$/i) if opts.dbm
-
-        if stackpath.length > 2
-          raise MiddlewareError, "Improper middleware module hierarchy #{mod.to_s}: too many levels"
-        end
-
-        group, stack = stackpath
-        monkey.insert_middleware_hook(mod, group_name: group, stack_name: stack) if stack
+        monkey.insert_middleware_hook(mod, stack_path: stack_path) unless stack_path.empty?
 
         @inserted[mod] = true
       end

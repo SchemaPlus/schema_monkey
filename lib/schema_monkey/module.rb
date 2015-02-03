@@ -29,5 +29,12 @@ module SchemaMonkey
       children + children.flat_map {|c| descendants(c, can_load: opts.can_load) }
     end
 
+    def mkpath(mod, path)
+      path.split('::').each do |component|
+        mod = const_lookup(mod, component) || mod.const_set(component, ::Module.new)
+      end
+      mod
+    end
+
   end
 end

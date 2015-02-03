@@ -7,6 +7,12 @@ module SchemaMonkey
       @hooks = []
     end
 
+    def self.is_hook?(mod)
+      return true if (mod.instance_methods & [:before, :around, :after, :implementation]).any?
+      return true if Module.const_lookup mod, "ENV"
+      false
+    end
+
     def append(mod)
       hook = Hook.new(self, mod)
       @hooks.last.next = hook if @hooks.any?
@@ -69,8 +75,8 @@ module SchemaMonkey
 
     module StartMethod
       attr_reader :stack
-      def start(env)
-        stack.start(env)
+      def start(env, &block)
+        stack.start(env, &block)
       end
 
       private
