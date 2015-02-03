@@ -1,4 +1,4 @@
-module SchemaMonkey::Base
+module SchemaMonkey::Core
   module Middleware
     module Query
       module ExecCache

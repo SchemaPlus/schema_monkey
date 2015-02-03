@@ -1,9 +1,9 @@
 module SchemaMonkey
   class Stack
     def initialize(opts={})
-      opts = opts.keyword_args(name: :required, env: :required)
-      @name = opts.name
-      @env_class = KeyStruct[*opts.env]
+      opts = opts.keyword_args(module: :required, env: :required)
+      @module = opts.module
+      @env_class = @module.const_set "Env", KeyStruct[*opts.env]
       @hooks = []
     end
 
@@ -42,7 +42,7 @@ module SchemaMonkey
       elsif @implementation
         @implementation.call env
       else
-        raise MiddlewareError, "No implementation for middleware stack #{@name}"
+        raise MiddlewareError, "No implementation for middleware stack #{@module}"
       end
     end
 

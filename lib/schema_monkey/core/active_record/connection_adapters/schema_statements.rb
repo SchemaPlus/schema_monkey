@@ -13,15 +13,12 @@ module SchemaMonkey::Core
           end
         end
 
-        IndexComponentSql = KeyStruct[:name, :type, :columns, :options, :algorithm, :using]
+        IndexComponentsSql = KeyStruct[:name, :type, :columns, :options, :algorithm, :using]
 
         def add_index_options_with_schema_monkey(table_name, column_names, options={})
-          cache = []
-          Middleware::Migration::IndexComponentsSql.start connection: self, table_name: table_name, column_names: Array.wrap(column_names), options: options.deep_dup, sql: IndexComponentsSql.new do |env|
-            cache << env
+          env = SchemaMonkey::Middleware::Migration::IndexComponentsSql.start(connection: self, table_name: table_name, column_names: Array.wrap(column_names), options: options.deep_dup, sql: IndexComponentsSql.new) { |env|
             env.sql.name, env.sql.type, env.sql.columns, env.sql.options, env.sql.algorithm, env.sql.using = add_index_options_without_schema_monkey(env.table_name, env.column_names, env.options)
-          end
-          env = cache[0]
+          }
           [env.sql.name, env.sql.type, env.sql.columns, env.sql.options, env.sql.algorithm, env.sql.using]
         end
 
@@ -40,13 +37,13 @@ module SchemaMonkey::Core
           end
 
           def add_column_with_schema_monkey(table_name, name, type, options = {})
-            Middleware::Migration::Column.start caller: self, operation: :add, table_name: table_name, column_name: name, type: type, options: options.deep_dup do |env|
+            SchemaMonkey::Middleware::Migration::Column.start(caller: self, operation: :add, table_name: table_name, column_name: name, type: type, options: options.deep_dup) do |env|
               add_column_without_schema_monkey env.table_name, env.column_name, env.type, env.options
             end
           end
 
           def change_column_with_schema_monkey(table_name, name, type, options = {})
-            Middleware::Migration::Column.start caller: self, operation: :change, table_name: table_name, column_name: name, type: type, options: options.deep_dup do |env|
+            SchemaMonkey::Middleware::Migration::Column.start(caller: self, operation: :change, table_name: table_name, column_name: name, type: type, options: options.deep_dup) do |env|
               change_column_without_schema_monkey env.table_name, env.column_name, env.type, env.options
             end
           end
@@ -59,7 +56,7 @@ module SchemaMonkey::Core
             end
           end
           def add_reference_with_schema_monkey(table_name, name, options = {})
-            Middleware::Migration::Column.start caller: self, operation: :add, table_name: table_name, column_name: "#{name}_id", type: :reference, options: options.deep_dup do |env|
+            SchemaMonkey::Middleware::Migration::Column.start(caller: self, operation: :add, table_name: table_name, column_name: "#{name}_id", type: :reference, options: options.deep_dup) do |env|
               add_reference_without_schema_monkey env.table_name, env.column_name.sub(/_id$/, ''), env.options
             end
           end
@@ -74,7 +71,7 @@ module SchemaMonkey::Core
           def add_index_with_schema_monkey(*args)
             options = args.extract_options!
             table_name, column_names = args
-            Middleware::Migration::Index.start caller: self, operation: :add, table_name: table_name, column_names: column_names, options: options.deep_dup do |env|
+            SchemaMonkey::Middleware::Migration::Index.start(caller: self, operation: :add, table_name: table_name, column_names: column_names, options: options.deep_dup) do |env|
               add_index_without_schema_monkey env.table_name, env.column_names, env.options
             end
           end

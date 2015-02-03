@@ -17,12 +17,13 @@ module SchemaMonkey
 
     def include_modules(opts={})
       opts = opts.keyword_args(:dbm)
+      # Kernel.warn "--- include modules for #{@root}, dbm=#{opts.dbm.inspect}"
       find_modules(:ActiveRecord, dbm: opts.dbm).each do |mod|
         next if mod.is_a? Class
         component = mod.to_s.sub(/^#{@root}::ActiveRecord::/, '')
         component = component.gsub(/#{opts.dbm}/i, opts.dbm.to_s) if opts.dbm # canonicalize case
         next unless base = Module.const_lookup(::ActiveRecord, component)
-        # Kernel.warn "including #{mod}"
+        # Kernel.warn "including #{mod} (dbm=#{opts.dbm})"
         Module.include_once base, mod
       end
     end
@@ -33,7 +34,7 @@ module SchemaMonkey
         next if @inserted[mod]
 
         stack_path = mod.to_s.sub(/^#{@root}::Middleware::/, '')
-        stack_path.sub!(/\b#{opts.dbm}\b/i).sub(/::::/, '::') if opts.dbm
+        stack_path = stack_path.split('::').reject(&it =~/\b#{opts.dbm}\b/i).join('::') if opts.dbm
 
         monkey.insert_middleware_hook(mod, stack_path: stack_path) unless stack_path.empty?
 

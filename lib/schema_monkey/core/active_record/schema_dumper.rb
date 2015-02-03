@@ -157,7 +157,7 @@ module SchemaMonkey::Core
       end
 
       def extensions_with_schema_monkey(_)
-        Middleware::Dumper::Extensions.start dumper: self, connection: @connection, dump: @dump, extensions: @dump.extensions do |env|
+        SchemaMonkey::Middleware::Dumper::Extensions.start(dumper: self, connection: @connection, dump: @dump, extensions: @dump.extensions) do |env|
           stream = StringIO.new
           extensions_without_schema_monkey(stream)
           env.dump.extensions << stream.string unless stream.string.blank?
@@ -165,13 +165,13 @@ module SchemaMonkey::Core
       end
 
       def tables_with_schema_monkey(_)
-        Middleware::Dumper::Tables.start dumper: self, connection: @connection, dump: @dump do |env|
+        SchemaMonkey::Middleware::Dumper::Tables.start(dumper: self, connection: @connection, dump: @dump) do |env|
           tables_without_schema_monkey(nil)
         end
       end
 
       def table_with_schema_monkey(table, _)
-        Middleware::Dumper::Table.start dumper: self, connection: @connection, dump: @dump, table: @dump.tables[table] = Dump::Table.new(name: table) do |env|
+        SchemaMonkey::Middleware::Dumper::Table.start(dumper: self, connection: @connection, dump: @dump, table: @dump.tables[table] = Dump::Table.new(name: table)) do |env|
           stream = StringIO.new
           table_without_schema_monkey(env.table.name, stream)
           m = stream.string.match %r{
@@ -204,7 +204,7 @@ module SchemaMonkey::Core
       end
 
       def indexes_with_schema_monkey(table, _)
-        Middleware::Dumper::Indexes.start dumper: self, connection: @connection, dump: @dump, table: @dump.tables[table] do |env|
+        SchemaMonkey::Middleware::Dumper::Indexes.start(dumper: self, connection: @connection, dump: @dump, table: @dump.tables[table]) do |env|
           stream = StringIO.new
           indexes_without_schema_monkey(env.table.name, stream)
           env.table.indexes += stream.string.split("\n").map { |string|

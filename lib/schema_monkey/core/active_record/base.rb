@@ -15,13 +15,13 @@ module SchemaMonkey::Core
         end
 
         def columns_with_schema_monkey
-          Middleware::Model::Columns.start model: self, columns: [] do |env|
+          SchemaMonkey::Middleware::Model::Columns.start(model: self, columns: []) { |env|
             env.columns += columns_without_schema_monkey
-          end
+          }.columns
         end
 
         def reset_column_information_with_schema_monkey
-          Middleware::Model::ResetColumnInformation.start model: self do |env|
+          SchemaMonkey::Middleware::Model::ResetColumnInformation.start(model: self) do |env|
             reset_column_information_without_schema_monkey
           end
         end

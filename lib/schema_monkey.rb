@@ -13,26 +13,23 @@ require_relative "schema_monkey/stack"
 require_relative 'schema_monkey/rake'
 
 module SchemaMonkey
-  extend Module
+
+  module Middleware
+    # contents will be created dynamically
+  end
 
   DBMS = [:PostgreSQL, :Mysql, :SQLite3]
-
-  module ActiveRecord
-    module ConnectionAdapters
-      autoload :PostgresqlAdapter, 'schema_monkey/active_record/connection_adapters/postgresql_adapter'
-      autoload :Mysql2Adapter, 'schema_monkey/active_record/connection_adapters/mysql2_adapter'
-      autoload :Sqlite3Adapter, 'schema_monkey/active_record/connection_adapters/sqlite3_adapter'
-    end
-  end
 
   def self.register(mod)
     monkey.register(mod)
   end
 
   def self.insert(opts={})
-    remove_const :Middleware if defined?(SchemaMonkey::Middleware)
-    const_set :Middleware, ::Module.new
     monkey.insert(opts)
+  end
+
+  def self.include_once(*args)
+    Module.include_once(*args)
   end
   
   private
@@ -43,6 +40,8 @@ module SchemaMonkey
 
   def self.reset_for_rspec
     @monkey = nil
+    remove_const :Middleware
+    const_set :Middleware, ::Module.new
   end
 
 end
