@@ -14,9 +14,9 @@ module SchemaMonkey::Core
         end
 
         def exec_cache_with_schema_monkey(sql, name, binds)
-          SchemaMonkey::Middleware::Query::ExecCache.start(connection: self, sql: sql, name: name, binds: binds) do |env|
-            exec_cache_without_schema_monkey(env.sql, env.name, env.binds)
-          end
+          SchemaMonkey::Middleware::Query::ExecCache.start(connection: self, sql: sql, name: name, binds: binds) { |env|
+            env.result = exec_cache_without_schema_monkey(env.sql, env.name, env.binds)
+          }.result
         end
 
         def indexes_with_schema_monkey(table_name, query_name=nil)

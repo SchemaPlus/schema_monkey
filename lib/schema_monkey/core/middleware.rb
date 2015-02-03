@@ -2,7 +2,7 @@ module SchemaMonkey::Core
   module Middleware
     module Query
       module ExecCache
-        ENV = [:connection, :sql, :name, :binds]
+        ENV = [:connection, :sql, :name, :binds, :result]
       end
 
       module Tables
