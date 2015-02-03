@@ -1,4 +1,4 @@
-module SchemaMonkey::Core
+module SchemaMonkey::CoreExtensions
   module ActiveRecord
     module ConnectionAdapters
       module PostgresqlAdapter
@@ -8,9 +8,9 @@ module SchemaMonkey::Core
             alias_method_chain :exec_cache, :schema_monkey
             alias_method_chain :indexes, :schema_monkey
           end
-          SchemaMonkey.include_once ::ActiveRecord::ConnectionAdapters::SchemaStatements, SchemaMonkey::Core::ActiveRecord::ConnectionAdapters::SchemaStatements::Reference
-          SchemaMonkey.include_once ::ActiveRecord::ConnectionAdapters::PostgreSQL::SchemaStatements, SchemaMonkey::Core::ActiveRecord::ConnectionAdapters::SchemaStatements::Column
-          SchemaMonkey.include_once ::ActiveRecord::ConnectionAdapters::PostgreSQL::SchemaStatements, SchemaMonkey::Core::ActiveRecord::ConnectionAdapters::SchemaStatements::Index
+          SchemaMonkey.include_once ::ActiveRecord::ConnectionAdapters::SchemaStatements, SchemaMonkey::CoreExtensions::ActiveRecord::ConnectionAdapters::SchemaStatements::Reference
+          SchemaMonkey.include_once ::ActiveRecord::ConnectionAdapters::PostgreSQL::SchemaStatements, SchemaMonkey::CoreExtensions::ActiveRecord::ConnectionAdapters::SchemaStatements::Column
+          SchemaMonkey.include_once ::ActiveRecord::ConnectionAdapters::PostgreSQL::SchemaStatements, SchemaMonkey::CoreExtensions::ActiveRecord::ConnectionAdapters::SchemaStatements::Index
         end
 
         def exec_cache_with_schema_monkey(sql, name, binds)

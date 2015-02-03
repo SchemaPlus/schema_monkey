@@ -1,4 +1,4 @@
-module SchemaMonkey::Core
+module SchemaMonkey::CoreExtensions
   module ActiveRecord
     module ConnectionAdapters
       module SchemaStatements

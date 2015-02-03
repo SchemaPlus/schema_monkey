@@ -1,4 +1,4 @@
-require_relative "schema_monkey/core"
+require_relative "schema_monkey/core_extensions"
 require_relative "schema_monkey/tool"
 
 # 
@@ -35,6 +35,6 @@ module SchemaMonkey
 end
 
 #
-# Register Core extensions
+# Register CoreExtensions
 #
-SchemaMonkey::Tool.register(SchemaMonkey::Core)
+SchemaMonkey::Tool.register(SchemaMonkey::CoreExtensions)

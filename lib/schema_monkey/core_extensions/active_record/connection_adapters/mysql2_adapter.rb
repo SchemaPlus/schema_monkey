@@ -1,4 +1,4 @@
-module SchemaMonkey::Core
+module SchemaMonkey::CoreExtensions
   module ActiveRecord
     module ConnectionAdapters
       module Mysql2Adapter
@@ -8,9 +8,9 @@ module SchemaMonkey::Core
             alias_method_chain :indexes, :schema_monkey
             alias_method_chain :tables, :schema_monkey
           end
-          SchemaMonkey.include_once ::ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter, SchemaMonkey::Core::ActiveRecord::ConnectionAdapters::SchemaStatements::Column
-          SchemaMonkey.include_once ::ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter, SchemaMonkey::Core::ActiveRecord::ConnectionAdapters::SchemaStatements::Reference
-          SchemaMonkey.include_once ::ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter, SchemaMonkey::Core::ActiveRecord::ConnectionAdapters::SchemaStatements::Index
+          SchemaMonkey.include_once ::ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter, SchemaMonkey::CoreExtensions::ActiveRecord::ConnectionAdapters::SchemaStatements::Column
+          SchemaMonkey.include_once ::ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter, SchemaMonkey::CoreExtensions::ActiveRecord::ConnectionAdapters::SchemaStatements::Reference
+          SchemaMonkey.include_once ::ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter, SchemaMonkey::CoreExtensions::ActiveRecord::ConnectionAdapters::SchemaStatements::Index
         end
 
         def indexes_with_schema_monkey(table_name, query_name=nil)
