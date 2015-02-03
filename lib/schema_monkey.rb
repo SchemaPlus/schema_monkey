@@ -1,19 +1,15 @@
 require 'hash_keyword_args'
 require 'its-it'
 require 'key_struct'
-require 'middleware'
 require 'active_record'
 require 'active_support/core_ext/string'
 
 require_relative "schema_monkey/client"
-require_relative "schema_monkey/middleware"
+require_relative "schema_monkey/core"
+require_relative "schema_monkey/errors"
 require_relative "schema_monkey/module"
-require_relative "schema_monkey/active_record/base"
-require_relative "schema_monkey/active_record/connection_adapters/abstract_adapter"
-require_relative "schema_monkey/active_record/connection_adapters/table_definition"
-require_relative 'schema_monkey/active_record/connection_adapters/schema_statements'
-require_relative 'schema_monkey/active_record/migration/command_recorder'
-require_relative 'schema_monkey/active_record/schema_dumper'
+require_relative "schema_monkey/monkey"
+require_relative "schema_monkey/stack"
 require_relative 'schema_monkey/rake'
 
 module SchemaMonkey
@@ -30,16 +26,23 @@ module SchemaMonkey
   end
 
   def self.register(mod)
-    clients << Client.new(mod)
-  end
-
-  def self.clients
-    @clients ||= [Client.new(self)]
+    monkey.register(mod)
   end
 
   def self.insert(opts={})
-    opts = opts.keyword_args(:dbm)
-    clients.each &it.insert(dbm: opts.dbm)
+    remove_const :Middleware if defined?(SchemaMonkey::Middleware)
+    const_set :Middleware, ::Module.new
+    monkey.insert(opts)
+  end
+  
+  private
+
+  def self.monkey
+    @monkey ||= Monkey.new.tap {|monkey| monkey.register SchemaMonkey::Core}
+  end
+
+  def self.reset_for_rspec
+    @monkey = nil
   end
 
 end

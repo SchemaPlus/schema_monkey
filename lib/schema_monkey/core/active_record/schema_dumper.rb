@@ -1,7 +1,7 @@
 require 'ostruct'
 require 'tsort'
 
-module SchemaMonkey
+module SchemaMonkey::Core
   module ActiveRecord
     module SchemaDumper
 

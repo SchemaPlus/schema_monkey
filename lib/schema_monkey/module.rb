@@ -9,7 +9,7 @@ module SchemaMonkey
     # ruby 2.* supports mod.const_get("Component::Path") but ruby 1.9.3
     # doesn't.  And neither has an option to return nil rather than raising
     # a NameError
-    def get_const(mod, name)
+    def const_lookup(mod, name)
       name.to_s.split('::').map(&:to_sym).each do |component|
         begin
           mod = mod.const_get(component, false)

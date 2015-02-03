@@ -1,4 +1,4 @@
-module SchemaMonkey
+module SchemaMonkey::Core
   module ActiveRecord
     module Migration
       module CommandRecorder
