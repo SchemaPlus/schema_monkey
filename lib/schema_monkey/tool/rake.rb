@@ -1,4 +1,4 @@
-module SchemaMonkey
+module SchemaMonkey::Tool
   module Rake
     TASKS_PATH = Pathname.new(__FILE__).dirname + "tasks"
 

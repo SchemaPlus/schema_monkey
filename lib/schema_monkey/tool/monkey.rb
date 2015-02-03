@@ -1,4 +1,4 @@
-module SchemaMonkey
+module SchemaMonkey::Tool
 
   # The main manager for the monkey patches.  Singleton instance 
   # created by SchemaMonkey.monkey
@@ -25,17 +25,16 @@ module SchemaMonkey
 
       return unless Stack.is_hook?(mod)
 
-      stack = Module.const_lookup Middleware, opts.stack_path
+      stack = Module.const_lookup SchemaMonkey::Middleware, opts.stack_path
       env = Module.const_lookup mod, "ENV"
-
 
       case
       when stack && env
         raise MiddlewareError, "#{mod}::ENV: stack #{stack} is already defined"
       when !stack && !env
-        raise MiddlewareError, "#{mod}: No stack #{Middleware}::#{opts.stack_path}"
+        raise MiddlewareError, "#{mod}: No stack #{SchemaMonkey::Middleware}::#{opts.stack_path}"
       when !stack && env
-        stack = Module.mkpath Middleware, opts.stack_path
+        stack = Module.mkpath SchemaMonkey::Middleware, opts.stack_path
         stack.send :extend, Stack::StartMethod
         stack.send :stack=, Stack.new(module: stack, env: env)
       end

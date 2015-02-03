@@ -1,10 +1,14 @@
+require 'active_record'
+require 'key_struct'
+
 module SchemaMonkey
   module Core
     module ActiveRecord
       module ConnectionAdapters
-        autoload :PostgresqlAdapter, 'schema_monkey/core/active_record/connection_adapters/postgresql_adapter'
-        autoload :Mysql2Adapter, 'schema_monkey/core/active_record/connection_adapters/mysql2_adapter'
-        autoload :Sqlite3Adapter, 'schema_monkey/core/active_record/connection_adapters/sqlite3_adapter'
+        DIR = Pathname.new(__FILE__).dirname + 'core/active_record/connection_adapters'
+        autoload :PostgresqlAdapter,    DIR + 'postgresql_adapter'
+        autoload :Mysql2Adapter,        DIR + 'mysql2_adapter'
+        autoload :Sqlite3Adapter,       DIR + 'sqlite3_adapter'
       end
     end
   end

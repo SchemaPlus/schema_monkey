@@ -1,4 +1,4 @@
-module SchemaMonkey
+module SchemaMonkey::Tool
   class Client
     attr_reader :monkey
 
@@ -53,7 +53,7 @@ module SchemaMonkey
         reject = nil
       else
         accept = nil
-        reject = /\b(#{SchemaMonkey::DBMS.join('|')})/i
+        reject = /\b(#{DBMS.join('|')})/i
       end
 
       modules = []

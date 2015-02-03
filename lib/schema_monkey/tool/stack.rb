@@ -1,4 +1,4 @@
-module SchemaMonkey
+module SchemaMonkey::Tool
   class Stack
     def initialize(opts={})
       opts = opts.keyword_args(module: :required, env: :required)

@@ -20,7 +20,7 @@ Dir[File.dirname(__FILE__) + "/support/**/*.rb"].each {|f| require f}
 RSpec.configure do |config|
   config.warnings = true
   config.after(:each) do
-    SchemaMonkey.reset_for_rspec
+    SchemaMonkey::Tool.reset_for_rspec
   end
 end
 

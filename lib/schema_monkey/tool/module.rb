@@ -1,4 +1,4 @@
-module SchemaMonkey
+module SchemaMonkey::Tool
   module Module
     extend self
 
