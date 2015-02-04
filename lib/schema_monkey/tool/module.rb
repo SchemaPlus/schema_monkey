@@ -3,7 +3,11 @@ module SchemaMonkey::Tool
     extend self
 
     def include_once(base, mod)
-      base.send(:include, mod) unless base.include? mod
+      if mod.respond_to? :included
+        base.send(:include, mod) unless base.include? mod
+      else
+        base.send(:prepend, mod)
+      end
     end
 
     # ruby 2.* supports mod.const_get("Component::Path") but ruby 1.9.3

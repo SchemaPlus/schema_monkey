@@ -2,27 +2,21 @@ module SchemaMonkey::CoreExtensions
   module ActiveRecord
 
     module Base
-      def self.included(base)
-        base.extend(ClassMethods)
+      def self.prepended(base)
+        base.singleton_class.prepend ClassMethods
       end
 
       module ClassMethods
-        def self.extended(base)
-          class << base
-            alias_method_chain :columns, :schema_monkey
-            alias_method_chain :reset_column_information, :schema_monkey
-          end
-        end
 
-        def columns_with_schema_monkey
+        def columns
           SchemaMonkey::Middleware::Model::Columns.start(model: self, columns: []) { |env|
-            env.columns += columns_without_schema_monkey
+            env.columns += super
           }.columns
         end
 
-        def reset_column_information_with_schema_monkey
+        def reset_column_information
           SchemaMonkey::Middleware::Model::ResetColumnInformation.start(model: self) do |env|
-            reset_column_information_without_schema_monkey
+            super
           end
         end
       end

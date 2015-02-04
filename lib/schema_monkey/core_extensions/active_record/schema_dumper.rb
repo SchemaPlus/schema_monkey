@@ -125,55 +125,48 @@ module SchemaMonkey::CoreExtensions
         end
       end
 
-      def self.included(base)
+      def self.prepended(base)
         base.class_eval do
-          alias_method_chain :dump, :schema_monkey
-          alias_method_chain :extensions, :schema_monkey
-          alias_method_chain :tables, :schema_monkey
-          alias_method_chain :table, :schema_monkey
-          alias_method_chain :foreign_keys, :schema_monkey
-          alias_method_chain :trailer, :schema_monkey
-          alias_method_chain :indexes, :schema_monkey
           public :ignored?
         end
       end
 
-      def dump_with_schema_monkey(stream)
+      def dump(stream)
         @dump = Dump.new(self)
-        dump_without_schema_monkey(stream)
+        super stream
         @dump.assemble(stream)
       end
 
-      def foreign_keys_with_schema_monkey(table, _)
+      def foreign_keys(table, _)
         stream = StringIO.new
-        foreign_keys_without_schema_monkey(table, stream)
+        super table, stream
         @dump.foreign_keys += stream.string.split("\n").map(&:strip)
       end
 
-      def trailer_with_schema_monkey(_)
+      def trailer(_)
         stream = StringIO.new
-        trailer_without_schema_monkey(stream)
+        super stream
         @dump.trailer = stream.string
       end
 
-      def extensions_with_schema_monkey(_)
+      def extensions(_)
         SchemaMonkey::Middleware::Dumper::Extensions.start(dumper: self, connection: @connection, dump: @dump, extensions: @dump.extensions) do |env|
           stream = StringIO.new
-          extensions_without_schema_monkey(stream)
+          super stream
           env.dump.extensions << stream.string unless stream.string.blank?
         end
       end
 
-      def tables_with_schema_monkey(_)
+      def tables(_)
         SchemaMonkey::Middleware::Dumper::Tables.start(dumper: self, connection: @connection, dump: @dump) do |env|
-          tables_without_schema_monkey(nil)
+          super nil
         end
       end
 
-      def table_with_schema_monkey(table, _)
+      def table(table, _)
         SchemaMonkey::Middleware::Dumper::Table.start(dumper: self, connection: @connection, dump: @dump, table: @dump.tables[table] = Dump::Table.new(name: table)) do |env|
           stream = StringIO.new
-          table_without_schema_monkey(env.table.name, stream)
+          super env.table.name, stream
           m = stream.string.match %r{
           \A \s*
             create_table \s*
@@ -203,10 +196,10 @@ module SchemaMonkey::CoreExtensions
         end
       end
 
-      def indexes_with_schema_monkey(table, _)
+      def indexes(table, _)
         SchemaMonkey::Middleware::Dumper::Indexes.start(dumper: self, connection: @connection, dump: @dump, table: @dump.tables[table]) do |env|
           stream = StringIO.new
-          indexes_without_schema_monkey(env.table.name, stream)
+          super env.table.name, stream
           env.table.indexes += stream.string.split("\n").map { |string|
             m = string.strip.match %r{
               ^

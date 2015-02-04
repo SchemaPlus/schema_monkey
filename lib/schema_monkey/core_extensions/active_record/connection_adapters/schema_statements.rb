@@ -16,10 +16,9 @@ module SchemaMonkey::CoreExtensions
         IndexComponentsSql = KeyStruct[:name, :type, :columns, :options, :algorithm, :using]
 
         def add_index_options_with_schema_monkey(table_name, column_names, options={})
-          env = SchemaMonkey::Middleware::Migration::IndexComponentsSql.start(connection: self, table_name: table_name, column_names: Array.wrap(column_names), options: options.deep_dup, sql: IndexComponentsSql.new) { |env|
+          SchemaMonkey::Middleware::Migration::IndexComponentsSql.start(connection: self, table_name: table_name, column_names: Array.wrap(column_names), options: options.deep_dup, sql: IndexComponentsSql.new) { |env|
             env.sql.name, env.sql.type, env.sql.columns, env.sql.options, env.sql.algorithm, env.sql.using = add_index_options_without_schema_monkey(env.table_name, env.column_names, env.options)
-          }
-          [env.sql.name, env.sql.type, env.sql.columns, env.sql.options, env.sql.algorithm, env.sql.using]
+          }.sql.to_hash.values
         end
 
         #
@@ -50,16 +49,14 @@ module SchemaMonkey::CoreExtensions
         end
 
         module Reference
-          def self.included(base)
-            base.class_eval do
-              alias_method_chain :add_reference, :schema_monkey
-            end
-          end
-          def add_reference_with_schema_monkey(table_name, name, options = {})
+
+          def add_reference(table_name, name, options = {})
             SchemaMonkey::Middleware::Migration::Column.start(caller: self, operation: :add, table_name: table_name, column_name: "#{name}_id", type: :reference, options: options.deep_dup) do |env|
-              add_reference_without_schema_monkey env.table_name, env.column_name.sub(/_id$/, ''), env.options
+              super env.table_name, env.column_name.sub(/_id$/, ''), env.options
             end
           end
+
+
         end
 
         module Index
@@ -76,7 +73,6 @@ module SchemaMonkey::CoreExtensions
             end
           end
         end
-
       end
     end
   end

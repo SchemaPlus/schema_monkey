@@ -18,10 +18,11 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
+  spec.required_ruby_version = ">= 2.0.0"
   spec.add_dependency "activerecord", "~> 4.2"
   spec.add_dependency "hash_keyword_args"
   spec.add_dependency "its-it"
-  spec.add_dependency "key_struct"
+  spec.add_dependency "modware"
 
   spec.add_development_dependency "bundler", "~> 1.7"
   spec.add_development_dependency "rake", "~> 10.0"
