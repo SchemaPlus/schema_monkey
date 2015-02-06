@@ -23,7 +23,8 @@ module SchemaMonkey::Tool
     def insert_middleware_hook(mod, opts={})
       opts = opts.keyword_args(stack_path: :required)
 
-      return unless Stack.is_hook?(mod)
+      return unless Modware.is_middleware?(mod) or Module.const_lookup mod, "ENV"
+
 
       stack = Module.const_lookup SchemaMonkey::Middleware, opts.stack_path
       env = Module.const_lookup mod, "ENV"
@@ -36,10 +37,10 @@ module SchemaMonkey::Tool
       when !stack && env
         stack = Module.mkpath SchemaMonkey::Middleware, opts.stack_path
         stack.send :extend, Stack::StartMethod
-        stack.send :stack=, Stack.new(module: stack, env: env)
+        stack.send :stack=, Modware::Stack.new(env)
       end
 
-      stack.stack.append(mod)
+      stack.stack.add(mod)
     end
 
   end

@@ -10,13 +10,6 @@ describe SchemaMonkey::Middleware do
 
     Then { expect(defined?(SchemaMonkey::Middleware::Group::Stack)).to be_truthy }
 
-    context "when start with no implementation" do
-
-      When(:env) { SchemaMonkey::Middleware::Group::Stack.start result: [] }
-
-      Then { expect(env).to have_failed(SchemaMonkey::MiddlewareError, /implementation/) }
-    end
-
     context "when start with inline implementation" do
 
       When(:env) { SchemaMonkey::Middleware::Group::Stack.start result: [] { |env| env.result << :inline } }

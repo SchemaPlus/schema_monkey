@@ -1,7 +1,7 @@
 require 'hash_keyword_args'
 require 'its-it'
-require 'key_struct'
 require 'active_support/core_ext/string'
+require 'modware'
 
 require_relative "tool/client"
 require_relative "tool/errors"
