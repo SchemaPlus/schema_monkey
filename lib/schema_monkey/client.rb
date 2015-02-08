@@ -1,9 +1,7 @@
 module SchemaMonkey
   class Client
-    attr_reader :monkey
 
-    def initialize(monkey, mod)
-      @monkey = monkey
+    def initialize(mod)
       @root = mod
       @inserted_middleware = {}
     end

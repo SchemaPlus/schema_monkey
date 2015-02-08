@@ -14,7 +14,7 @@ module SchemaMonkey
     end
 
     def register(mod)
-      client = Client.new(self, mod)
+      client = Client.new(mod)
       clients << client
       client.insert if @inserted
       client.insert(@inserted_dbm) if @inserted_dbm
