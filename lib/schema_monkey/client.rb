@@ -7,19 +7,19 @@ module SchemaMonkey
     end
 
     def insert(dbm: nil)
-      insert_modules(dbm: dbm)
+      insert_active_record(dbm: dbm)
       insert_middleware(dbm: dbm)
       @root.insert(dbm: dbm) if @root.respond_to?(:insert) and @root != ::SchemaMonkey
     end
 
-    def insert_modules(dbm: nil)
-      # Kernel.warn "--- inserting modules for #{@root}, dbm=#{dbm.inspect}"
+    private
+
+    def insert_active_record(dbm: nil)
+      # Kernel.warn "--- inserting active_record for #{@root}, dbm=#{dbm.inspect}"
       find_modules(:ActiveRecord, dbm: dbm).each do |mod|
         next if mod.is_a? Class
         relative_path = canonicalize_path(mod, :ActiveRecord, dbm)
-        next unless base = Module.const_lookup(::ActiveRecord, relative_path)
-        # Kernel.warn "inserting #{mod} (dbm=#{dbm})"
-        Module.insert base, mod
+        ActiveRecord.insert(relative_path, mod)
       end
     end
 
@@ -31,8 +31,6 @@ module SchemaMonkey
         @inserted_middleware[mod] = true
       end
     end
-
-    private
 
     def canonicalize_path(mod, base, dbm)
       path = mod.to_s.sub(/^#{@root}::#{base}::/, '')

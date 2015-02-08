@@ -11,19 +11,20 @@ module SchemaMonkey
       @clients = []
       @inserted = nil
       @inserted_dbm = nil
+      Module.insert ::ActiveRecord::ConnectionAdapters::AbstractAdapter, SchemaMonkey::ActiveRecord::ConnectionAdapters::AbstractAdapter 
     end
 
     def register(mod)
       client = Client.new(mod)
       clients << client
       client.insert if @inserted
-      client.insert(@inserted_dbm) if @inserted_dbm
+      client.insert(dbm: @inserted_dbm) if @inserted_dbm
     end
 
     def insert(dbm: nil)
+      clients.each &it.insert(dbm: dbm)
       @inserted = true
       @inserted_dbm = dbm if dbm
-      clients.each &it.insert(dbm: dbm)
     end
 
   end

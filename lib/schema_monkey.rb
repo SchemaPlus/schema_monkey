@@ -1,7 +1,9 @@
-require 'its-it'
+require 'active_record'
 require 'active_support/core_ext/string'
+require 'its-it'
 require 'modware'
 
+require_relative "schema_monkey/active_record"
 require_relative "schema_monkey/client"
 require_relative "schema_monkey/errors"
 require_relative "schema_monkey/module"
