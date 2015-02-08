@@ -29,7 +29,7 @@ module SchemaMonkey
       find_modules(:Middleware, dbm: dbm).each do |mod|
         next if @inserted_middleware[mod]
         relative_path = canonicalize_path(mod, :Middleware, dbm)
-        monkey.insert_middleware_hook(mod, stack_path: relative_path) unless relative_path.empty?
+        Stack.insert(relative_path, mod) unless relative_path.empty?
         @inserted_middleware[mod] = true
       end
     end
