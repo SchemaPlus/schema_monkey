@@ -37,7 +37,7 @@ module SchemaMonkey::Tool
       when !stack && env
         stack = Module.mkpath SchemaMonkey::Middleware, opts.stack_path
         stack.send :extend, Stack::StartMethod
-        stack.send :stack=, Modware::Stack.new(env)
+        stack.send :stack=, Modware::Stack.new(env: env)
       end
 
       stack.stack.add(mod)

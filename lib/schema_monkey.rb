@@ -1,4 +1,3 @@
-require_relative "schema_monkey/core_extensions"
 require_relative "schema_monkey/tool"
 
 # 
@@ -33,8 +32,3 @@ module SchemaMonkey
 
   MiddlewareError = Tool::MiddlewareError
 end
-
-#
-# Register CoreExtensions
-#
-SchemaMonkey::Tool.register(SchemaMonkey::CoreExtensions)
