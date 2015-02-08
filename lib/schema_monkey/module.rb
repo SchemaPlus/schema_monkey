@@ -2,7 +2,7 @@ module SchemaMonkey
   module Module
     extend self
 
-    def include_once(base, mod)
+    def insert(base, mod)
       if mod.respond_to? :included
         base.send(:include, mod) unless base.include? mod
       else

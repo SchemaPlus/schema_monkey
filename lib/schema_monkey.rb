@@ -32,8 +32,8 @@ module SchemaMonkey
     monkey.insert(opts)
   end
 
-  def self.include(*args)
-    Module.include(*args)
+  def self.insert_module(*args)
+    Module.insert(*args)
   end
 
   private
