@@ -61,14 +61,6 @@ the standard protocol: fork, feature branch, develop, push, and issue pull reque
 
 Some things to know about to help you develop and test:
 
-* SchemaMonkey is a wrapper around two subparts:
-
-  * `SchemaMonkey::Tool` provides the convention-based mechanism for registering clients that extend ActiveRecord using `include`'s and middleware.
-  
-  * `SchemaMonkey::CoreExtensions` defines the ActiveRecord extension API. It is itself just the first client registered with `SchemaMonkey::Tool`.  **Ugh. Currently no specs for `SchemaMonkey::CoreExtensions`;  testing indirectly by testing the client gems that use it.  Working on it...**
-
-  One day might actually split these into separate gems to decouple their development and testing.  And actually the middleware mechanism of `SchemaMonkey::Tool` could be a split out separate gem.
-
 * **schema_dev**:  SchemaMonkey uses [schema_dev](https://github.com/SchemaPlus/schema_dev) to
   facilitate running rspec tests on the matrix of ruby, rails, and database
   versions that the gem supports, both locally and on

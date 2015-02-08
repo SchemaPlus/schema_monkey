@@ -1,4 +1,13 @@
-require_relative "schema_monkey/tool"
+require 'its-it'
+require 'active_support/core_ext/string'
+require 'modware'
+
+require_relative "schema_monkey/client"
+require_relative "schema_monkey/errors"
+require_relative "schema_monkey/module"
+require_relative "schema_monkey/monkey"
+require_relative "schema_monkey/stack"
+require_relative 'schema_monkey/rake'
 
 # 
 # Middleware contents will be created dynamically
@@ -9,26 +18,38 @@ module SchemaMonkey
 end
 
 #
-# Wrap public API of SchemaMonkey::Tool
+# 
 #
 module SchemaMonkey
+
+  DBMS = [:PostgreSQL, :Mysql, :SQLite3]
+
   def self.register(mod)
-    Tool::register(mod)
+    monkey.register(mod)
   end
 
   def self.insert(opts={})
-    Tool::insert(opts)
+    monkey.insert(opts)
   end
 
-  def self.include_once(*args)
-    Tool::Module.include_once(*args)
+  def self.include(*args)
+    Module.include(*args)
   end
 
-  module Rake
-    def self.insert(*args)
-      Tool::Rake::insert(*args)
-    end
+  private
+
+  def self.monkey
+    @monkey ||= Monkey.new
   end
 
-  MiddlewareError = Tool::MiddlewareError
+  def self.reset_for_rspec
+    @monkey = nil
+    self.reset_middleware
+  end
+
+  def self.reset_middleware
+    SchemaMonkey.send :remove_const, :Middleware
+    SchemaMonkey.send :const_set, :Middleware, ::Module.new
+  end
+
 end

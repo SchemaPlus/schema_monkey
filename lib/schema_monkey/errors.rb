@@ -1,4 +1,4 @@
-module SchemaMonkey::Tool
+module SchemaMonkey
   class MiddlewareError < Exception
   end
 end

@@ -1,4 +1,4 @@
-module SchemaMonkey::Tool
+module SchemaMonkey
   module Stack
     module StartMethod
       attr_reader :stack

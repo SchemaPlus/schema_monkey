@@ -1,4 +1,4 @@
-module SchemaMonkey::Tool
+module SchemaMonkey
   class Client
     attr_reader :monkey
 
@@ -8,33 +8,30 @@ module SchemaMonkey::Tool
       @inserted = {}
     end
 
-    def insert(opts={})
-      opts = opts.keyword_args(:dbm)
-      include_modules(dbm: opts.dbm)
-      insert_middleware(dbm: opts.dbm)
-      @root.insert() if @root.respond_to?(:insert) and @root != ::SchemaMonkey
+    def insert(dbm: nil)
+      include_modules(dbm: dbm)
+      insert_middleware(dbm: dbm)
+      @root.insert(dbm: dbm) if @root.respond_to?(:insert) and @root != ::SchemaMonkey
     end
 
-    def include_modules(opts={})
-      opts = opts.keyword_args(:dbm)
-      # Kernel.warn "--- include modules for #{@root}, dbm=#{opts.dbm.inspect}"
-      find_modules(:ActiveRecord, dbm: opts.dbm).each do |mod|
+    def include_modules(dbm: nil)
+      # Kernel.warn "--- include modules for #{@root}, dbm=#{dbm.inspect}"
+      find_modules(:ActiveRecord, dbm: dbm).each do |mod|
         next if mod.is_a? Class
         component = mod.to_s.sub(/^#{@root}::ActiveRecord::/, '')
-        component = component.gsub(/#{opts.dbm}/i, opts.dbm.to_s) if opts.dbm # canonicalize case
+        component = component.gsub(/#{dbm}/i, dbm.to_s) if dbm # canonicalize case
         next unless base = Module.const_lookup(::ActiveRecord, component)
-        # Kernel.warn "including #{mod} (dbm=#{opts.dbm})"
+        # Kernel.warn "including #{mod} (dbm=#{dbm})"
         Module.include_once base, mod
       end
     end
 
-    def insert_middleware(opts={})
-      opts = opts.keyword_args(:dbm)
-      find_modules(:Middleware, dbm: opts.dbm).each do |mod|
+    def insert_middleware(dbm: nil)
+      find_modules(:Middleware, dbm: dbm).each do |mod|
         next if @inserted[mod]
 
         stack_path = mod.to_s.sub(/^#{@root}::Middleware::/, '')
-        stack_path = stack_path.split('::').reject(&it =~/\b#{opts.dbm}\b/i).join('::') if opts.dbm
+        stack_path = stack_path.split('::').reject(&it =~/\b#{dbm}\b/i).join('::') if dbm
 
         monkey.insert_middleware_hook(mod, stack_path: stack_path) unless stack_path.empty?
 
@@ -44,12 +41,11 @@ module SchemaMonkey::Tool
 
     private
 
-    def find_modules(container, opts={})
-      opts = opts.keyword_args(dbm: nil)
+    def find_modules(container, dbm: nil)
       return [] unless (container = Module.const_lookup @root, container)
 
-      if opts.dbm
-        accept = /\b#{opts.dbm}/i
+      if dbm
+        accept = /\b#{dbm}/i
         reject = nil
       else
         accept = nil
