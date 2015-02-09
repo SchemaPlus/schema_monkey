@@ -17,7 +17,7 @@ module SchemaMonkey
     def self.insert(relative_path, mod)
       class_methods = relative_path.sub!(/::ClassMethods$/, '')
       base = Module.const_lookup(::ActiveRecord, relative_path)
-      return unless base
+      raise InsertionError, "No module ActiveRecord::#{relative_path} to insert #{mod}" unless base
       Module.insert (class_methods ? base.singleton_class : base), mod
       mod.extended base if class_methods and mod.respond_to? :extended
     end
