@@ -45,7 +45,7 @@ module SchemaMonkey
       return [] unless (container = Module.const_lookup @root, container)
 
       if dbm
-        accept = /\b#{dbm}/i
+        accept = /#{dbm}/i
         reject = nil
       else
         accept = nil
