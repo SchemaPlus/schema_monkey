@@ -1,1 +1,0 @@
-gem "modware", path: Pathname.new(__FILE__).dirname.parent + "modware"
