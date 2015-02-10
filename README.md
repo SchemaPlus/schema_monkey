@@ -5,29 +5,21 @@
 
 # SchemaMonkey
 
-SchemaMonkey is a behind-the-scenes gem to facilitate writing extensions to ActiveRecord (typically other gems, but could also be in an application).  It provides:
+SchemaMonkey is a behind-the-scenes gem to make it easy to write extensions to ActiveRecord.  It provides:
 
-* A "middleware"-style interface to key ActiveRecord internal functions.  For example, there's a middleware hook to let you insert a handler for migration column definition options, and there are several hooks to insert handlers for the various parts of a schema dump.
+* A simple convention-based mechanism to insert modules into ActiveRecord modules.
+* A simple convention-based mechanism to create and use [Modware](https://rubygems.org/gems/modware) middleware stacks.
 
-* A convention-based protocol for `include`'ing custom modules into ActiveRecord.  You just define your modules and SchemaMonkey will automatically include them in the right places.
-
-
-The middleware interface has two benefits: it provides a clean API so that the gem or aplication code doesn't need to monkey-patch ActiveRecord (SchemaMonkey does all the monkey-patching for you), and it lets multiple client gems operate in parallel without concern about conflicting monkey-patches.
-
+SchemaMonkey by itself doesn't add any behavior -- SchemaMonkey is intended to make it easy to add clients that define methods and stacks, that are then available to other clients or the app.  (In particular, most clients of SchemaMonkey will depend on [schema_plus_core](https://github.com/SchemaPlus/schema_plus_core), which is a SchemaMonkey client that provides an "internal extension API" to ActiveRecord.)
 
 ## Installation
 
 As usual:
 
 ```ruby
-# In a gem's .gemspec:
-spec.add_dependency "schema_monkey", "~> <MAJOR>.<MINOR>", ">= <MAJOR>.<MINOR>.<PATCH>"
-
-# In an applications Gemfile:
-gem "schema_monkey", "~> <MAJOR>.<MINOR>", ">= <MAJOR>.<MINOR>.<PATCH>"
+gem "schema_monkey"                 # in a Gemfile
+gem.add_dependency "schema_monkey"  # in a .gemspec
 ```
-
-SchemaMonkey follows semantic versioning; it's a good idea to explicitly use the `~>` and `>=` dependencies to make sure your gem's clients don't accidentally pull in a version of SchemaMonkey that your gem isn't compatible with.
 
 To use with a rails app, also include
 
@@ -35,7 +27,199 @@ To use with a rails app, also include
 gem "schema_monkey_rails"
 ```
 
-which creates a Railtie to insert SchemaMonkey appropriately into the rails stack.
+which creates a Railtie to insert SchemaMonkey appropriately into the rails stack. To use with Padrino, see [schema_monkey_padrino](https://github.com/SchemaPlus/schema_monkey_padrino).
+
+## Usage
+
+SchemaMonkey works with the notion of a "client" -- which is a module containining definitions.  A typical SchemaMonkey client looks like
+
+```ruby
+require 'schema_monkey'
+require 'other-client1'   # if needed
+require 'other-client2'   # as needed
+
+module MyClient
+
+  module ActiveRecord
+   [... active record extensions ...]
+  end
+
+  module Middleware
+    [... middleware stack modules ...]
+  end
+  
+end
+
+SchemaMonkey.register MyClient     # <--- That's it!  No configuration needed
+```
+
+of course a typical client will be split into files corresponding to submodules; e.g. here's the top level of [schema_plus_indexes](https://github.com/SchemaPlus/schema_plus_indexes):
+
+```ruby
+require 'schema_plus/core'
+
+require_relative 'schema_plus_indexes/active_record/base'
+require_relative 'schema_plus_indexes/active_record/connection_adapters/abstract_adapter'
+require_relative 'schema_plus_indexes/active_record/connection_adapters/index_definition'
+
+require_relative 'schema_plus_indexes/middleware/dumper'
+require_relative 'schema_plus_indexes/middleware/migration'
+require_relative 'schema_plus_indexes/middleware/model'
+require_relative 'schema_plus_indexes/middleware/query'
+
+SchemaMonkey.register SchemaPlusIndexes
+```
+
+## ActiveRecord extensions
+
+Here's a simple example of an extension to ActiveRecord:
+
+```ruby
+require 'schema_monkey'
+
+module PracticalJoker
+  module ActiveRecord
+    module Base
+       
+       def save(*args)
+         raise "April Fools!" if Time.now.yday == 31
+         super
+       end
+       
+       module ClassMethods
+         def columns
+           raise "Boo!" if Time.now.yday == 304
+           super
+         end
+       end
+       
+      end
+    end
+  end
+end
+
+SchemaMonkey.register PracticalJoker
+```
+
+SchemaMonkey inserts each submodule of `MyClient::ActiveRecord` into the corresponding module of ActiveRecord, with `ClassMethods` inserted as class methods.  
+
+This works for arbitrary submodule paths, such as `MyClient::ActiveRecord::ConnectionAdapters::TableDefinition`.  SchemaMonkey will raise an error if the client defines a module that does not have a corresponding ActiveRecord module.
+
+Notice that insertion is done using `:prepend`, so that client modules can override existing methods and use `super`.
+
+### DBMS-specific insertion
+
+If a client module's name includes one the dbms names `Mysql`, `PostgreSQL` or `SQLite3` (case insensitive), the insertion will only be performed if that's the dbms in use.  So, e.g. `MyClient::ActiveRecord::ConnectionAdapters::PostgreSQLAdapter` will only be inserted if the app is using PostgreSQL.
+
+Additionally, for ActiveRecord modules that are not inherently dbms-specific, you can use one of the dbms names (case insensitive) as a component in the client module's path to do dbms-specific insertion.   E.g.
+
+```ruby
+module MyClient
+  module ActiveRecord
+    module ConnectionAdapters
+      module Sqlite3
+        module TableDefinition
+          #
+          # SQLite3-specific enhancements to 
+          # ActiveRecord::ConnectionAdapters::TableDefinition
+          #
+        end
+      end
+    end
+  end
+end
+```
+
+The dbms name component can be anywhere in the module path after `MyClient::ActiveRecord`
+
+### `insert` vs `prepend`
+
+
+* By default, SchemaMonkey inserts a client module using `prepend`, and a client ClassMethods module using `singleton_class.prepend`. This allows overriding existing methods and using `super`.  On insertion, Ruby will of course call the module's `self.prepended` method, if one is defined.
+
+* However, if the client module defines a module method `self.included` then SchemaMonkey will use `include` for a module and `singleton_class.include` for a ClassMethods module -- and Ruby will of course call that method.
+
+Note that in the case of a ClassMethods module, when Ruby calls `self.prepended` or `self.included`, it will pass the singleton class.  For convience SchemaMonkey will also call `self.extended` if defined passing it the ActiveRecord module itself, just as Ruby would if `extend` were used.         
+
+## Middleware
+
+SchemaMonkey provides a convention-based front end to using [Modware](https://github.com/ronen/modware) middleware stacks.
+
+SchemaMonkey uses Ruby modules to organize the stacks:  Each stack is contained in a submodule of `SchemaMonkey::Middleware`
+
+### Defining a stack
+
+Here's an example of defining a middleware stack:
+
+```ruby
+module MyClient
+  module Middleware
+    module Index
+      module Exists
+        Env = [:connection, :table_name, :column_name, :options, :result]
+      end
+    end
+  end
+end
+```
+
+This defines a stack available at `SchemaMonkey::Middleware::Index::Exists`.  You can use any module path you want for organizational convenience.  The const `Env` signals to SchemaMonkey to create a stack at that location; the environment object for the stack will have the listed fields. (Env actually can be an array of symbols or a Class, as per `Modware::Stack.new`.)
+
+SchemaMonkey will raise an error if a stack had already been defined there.
+
+The defined module has a module method `start` that delegates to `Modware::Stack.start`.  Here's an example of using the above stack as a wrapper around ActiveRecord's `index_exists?` method:
+
+```ruby
+module MyClient
+  module ActiveRecord
+    module ConnectionAdapters
+      module SchemaStatements
+        def index_exists?(table_name, column_name, options = {})
+          SchemaMonkey::Middleware::Index::Exists.start(connection: self, table_name: table_name, column_name: column_name, options: options) { |env|
+            env.result = super env.table_name, env.column_name, env.options
+          }.result
+        end
+      end
+    end
+  end
+end
+```
+
+This is a fairly typical idiom for wrapping behavior in a stack:
+
+1. Pass `self` and the method arguments to the stack environment
+2. Call the base implementation, passing it argument values from the environment (giving clients a chance to modify them in `before` or `around` methods)
+3. Place the result in the environment (giving clients a chance to modify it in `after` or `around` methods
+4. `start` returns the environment object -- the method returns the result that's stored in the environment
+
+### Inserting Middleware in a stack
+
+If an earlier client defined a stack, a later client can insert middleware into the stack:
+
+```ruby
+require 'my_client' # earlier client defines the stack
+
+module UColumnImpliesUnique
+  module Middlware
+    module Index
+      module Exists
+        def before(env)
+          env.options.reverse_merge!(unique: env.column_name.start_with? 'u')
+        end
+      end
+    end
+  end
+end
+
+SchemaMonkey.register(UColumnImpliesUnique)
+```
+
+SchemaMonkey uses the module `MyLaterClient::Middleware::Index::Exists` as [Modware](https://github.com/ronen/modware) middleware for the corresponding stack.  The middleware module can define middleware methods `before`, `arround`, `after`, or `implementation` as per [Modware](https://github.com/ronen/modware)
+
+Note that the distinguishing feature between defining and using a stack is whether `Env` is defined.
+
+    
+
 
 ## Compatibility
 
@@ -46,11 +230,6 @@ SchemaMonkey is tested on:
 * ruby **2.1.5** with activerecord **4.2**, using **mysql2**, **sqlite3** or **postgresql**
 
 <!-- SCHEMA_DEV: MATRIX - end -->
-
-## Usage
-
-
-**Sorry -- no real documentation yet. See examples in [schema_plus_indexes](https://github/SchemaPlus/schema_plus_indexes) and [schema_plus_pg_indexes](https://github/SchemaPlus/schema_plus_pg_indexes)**
 
 
 
