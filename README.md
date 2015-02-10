@@ -41,11 +41,15 @@ require 'other-client2'   # as needed
 module MyClient
 
   module ActiveRecord
-   [... active record extensions ...]
+    #
+    # active record extensions, if any
+    #
   end
 
   module Middleware
-    [... middleware stack modules ...]
+    #
+    # middleware stack modules, if any
+    #
   end
   
 end
@@ -70,7 +74,9 @@ require_relative 'schema_plus_indexes/middleware/query'
 SchemaMonkey.register SchemaPlusIndexes
 ```
 
-## ActiveRecord extensions
+The details of ActiveRecord exentions and Middleware modules are described below.
+
+## ActiveRecord Extensions
 
 Here's a simple example of an extension to ActiveRecord:
 
@@ -141,7 +147,7 @@ The dbms name component can be anywhere in the module path after `MyClient::Acti
 
 Note that in the case of a ClassMethods module, when Ruby calls `self.prepended` or `self.included`, it will pass the singleton class.  For convience SchemaMonkey will also call `self.extended` if defined passing it the ActiveRecord module itself, just as Ruby would if `extend` were used.         
 
-## Middleware
+## Middleware Modlues
 
 SchemaMonkey provides a convention-based front end to using [Modware](https://github.com/ronen/modware) middleware stacks.
 
