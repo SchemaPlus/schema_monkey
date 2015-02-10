@@ -9,7 +9,6 @@ module SchemaMonkey
     def insert(dbm: nil)
       insert_active_record(dbm: dbm)
       insert_middleware(dbm: dbm)
-      @root.insert(dbm: dbm) if @root.respond_to?(:insert) and @root != ::SchemaMonkey
     end
 
     private
