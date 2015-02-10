@@ -16,7 +16,6 @@ module SchemaMonkey
     def insert_active_record(dbm: nil)
       # Kernel.warn "--- inserting active_record for #{@root}, dbm=#{dbm.inspect}"
       find_modules(:ActiveRecord, dbm: dbm).each do |mod|
-        next if mod.is_a? Class
         relative_path = canonicalize_path(mod, :ActiveRecord, dbm)
         ActiveRecord.insert(relative_path, mod)
       end
