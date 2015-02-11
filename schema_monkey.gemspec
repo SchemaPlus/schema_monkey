@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = SchemaMonkey::VERSION
   spec.authors       = ["ronen barzel"]
   spec.email         = ["ronen@barzel.org"]
-  spec.summary       = %q{Provides an internal API and module inclusion protocol to facilitate adding features to ActiveRecord}
-  spec.description   = %q{Provides an internal API and module inclusion protocol to facilitate adding features to ActiveRecord}
+  spec.summary       = %q{Provides a module insertion protocol to facilitate adding features to ActiveRecord}
+  spec.description   = %q{Provides a module insertion protocol to facilitate adding features to ActiveRecord}
   spec.homepage      = "https://github.com/SchemaPlus/schema_monkey"
   spec.license       = "MIT"
 
