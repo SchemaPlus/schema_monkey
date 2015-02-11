@@ -35,8 +35,8 @@ SchemaMonkey works with the notion of a "client" -- which is a module containini
 
 ```ruby
 require 'schema_monkey'
-require 'other-client1'   # if needed
-require 'other-client2'   # as needed
+require 'other-client1'   # make sure clients you depend on are registered
+require 'other-client2'   # first, if/as needed.
 
 module MyClient
 
@@ -111,7 +111,7 @@ SchemaMonkey inserts each submodule of `MyClient::ActiveRecord` into the corresp
 
 This works for arbitrary submodule paths, such as `MyClient::ActiveRecord::ConnectionAdapters::TableDefinition`.  SchemaMonkey will raise an error if the client defines a module that does not have a corresponding ActiveRecord module.
 
-Notice that insertion is done using `:prepend`, so that client modules can override existing methods and use `super`.
+Notice that insertion is done using `Module.prepend`, so that client modules can override existing methods and use `super`.
 
 ### DBMS-specific insertion
 
@@ -145,11 +145,11 @@ The dbms name component can be anywhere in the module path after `MyClient::Acti
 
 * However, if the client module defines a module method `self.included` then SchemaMonkey will use `include` for a module and `singleton_class.include` for a ClassMethods module -- and Ruby will of course call that method.
 
-Note that in the case of a ClassMethods module, when Ruby calls `self.prepended` or `self.included`, it will pass the singleton class.  For convience SchemaMonkey will also call `self.extended` if defined passing it the ActiveRecord module itself, just as Ruby would if `extend` were used.         
+Note that in the case of a ClassMethods module, when Ruby calls `self.prepended` or `self.included`, it will pass the singleton class.  For convience SchemaMonkey will also call `self.extended` if defined, passing it the ActiveRecord module itself, just as Ruby would if `extend` were used.         
 
-## Middleware Modlues
+## Middleware Modules
 
-SchemaMonkey provides a convention-based front end to using [Modware](https://github.com/ronen/modware) middleware stacks.
+SchemaMonkey provides a convention-based front end to using [modware](https://github.com/ronen/modware) middleware stacks.
 
 SchemaMonkey uses Ruby modules to organize the stacks:  Each stack is contained in a submodule of `SchemaMonkey::Middleware`
 
@@ -220,7 +220,7 @@ end
 SchemaMonkey.register(UColumnImpliesUnique)
 ```
 
-SchemaMonkey uses the module `MyLaterClient::Middleware::Index::Exists` as [Modware](https://github.com/ronen/modware) middleware for the corresponding stack.  The middleware module can define middleware methods `before`, `arround`, `after`, or `implementation` as per [Modware](https://github.com/ronen/modware)
+SchemaMonkey uses the module `MyLaterClient::Middleware::Index::Exists` as [modware](https://github.com/ronen/modware) middleware for the corresponding stack.  The middleware module can define middleware methods `before`, `arround`, `after`, or `implementation` as per [modware](https://github.com/ronen/modware)
 
 Note that the distinguishing feature between defining and using a stack is whether `Env` is defined.
 
