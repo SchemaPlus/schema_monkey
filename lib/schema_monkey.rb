@@ -11,7 +11,7 @@ require_relative "schema_monkey/monkey"
 require_relative "schema_monkey/stack"
 require_relative 'schema_monkey/rake'
 
-# 
+#
 # Middleware contents will be created dynamically
 #
 module SchemaMonkey
@@ -20,7 +20,7 @@ module SchemaMonkey
 end
 
 #
-# 
+#
 #
 module SchemaMonkey
 

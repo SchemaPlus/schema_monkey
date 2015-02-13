@@ -34,7 +34,7 @@ module SchemaMonkey
       path = mod.to_s.sub(/^#{@root}::#{base}::/, '')
       if dbm
         path = path.split('::')
-        if (i = path.find_index(&it =~ /\b#{dbm}\b/i)) # delete first occurence 
+        if (i = path.find_index(&it =~ /\b#{dbm}\b/i)) # delete first occurence
           path.delete_at i
         end
         path = path.join('::').gsub(/#{dbm}/i, dbm.to_s) # canonicalize case for things like PostgreSQLAdapter

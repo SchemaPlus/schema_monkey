@@ -51,7 +51,7 @@ module MyClient
     # middleware stack modules, if any
     #
   end
-  
+
 end
 
 SchemaMonkey.register MyClient     # <--- That's it!  No configuration needed
@@ -86,19 +86,19 @@ require 'schema_monkey'
 module PracticalJoker
   module ActiveRecord
     module Base
-       
+
        def save(*args)
          raise "April Fools!" if Time.now.yday == 31
          super
        end
-       
+
        module ClassMethods
          def columns
            raise "Boo!" if Time.now.yday == 304
            super
          end
        end
-       
+
       end
     end
   end
@@ -107,7 +107,7 @@ end
 SchemaMonkey.register PracticalJoker
 ```
 
-SchemaMonkey inserts each submodule of `MyClient::ActiveRecord` into the corresponding module of ActiveRecord, with `ClassMethods` inserted as class methods.  
+SchemaMonkey inserts each submodule of `MyClient::ActiveRecord` into the corresponding module of ActiveRecord, with `ClassMethods` inserted as class methods.
 
 This works for arbitrary submodule paths, such as `MyClient::ActiveRecord::ConnectionAdapters::TableDefinition`.  SchemaMonkey will raise an error if the client defines a module that does not have a corresponding ActiveRecord module.
 
@@ -126,7 +126,7 @@ module MyClient
       module Sqlite3
         module TableDefinition
           #
-          # SQLite3-specific enhancements to 
+          # SQLite3-specific enhancements to
           # ActiveRecord::ConnectionAdapters::TableDefinition
           #
         end
@@ -145,7 +145,7 @@ The dbms name component can be anywhere in the module path after `MyClient::Acti
 
 * However, if the client module defines a module method `self.included` then SchemaMonkey will use `include` for a module and `singleton_class.include` for a ClassMethods module -- and Ruby will of course call that method.
 
-Note that in the case of a ClassMethods module, when Ruby calls `self.prepended` or `self.included`, it will pass the singleton class.  For convience SchemaMonkey will also call `self.extended` if defined, passing it the ActiveRecord module itself, just as Ruby would if `extend` were used.         
+Note that in the case of a ClassMethods module, when Ruby calls `self.prepended` or `self.included`, it will pass the singleton class.  For convience SchemaMonkey will also call `self.extended` if defined, passing it the ActiveRecord module itself, just as Ruby would if `extend` were used.
 
 ## Middleware Modules
 
@@ -173,7 +173,7 @@ This defines a stack available at `SchemaMonkey::Middleware::Index::Exists`.  Yo
 
 SchemaMonkey will raise an error if a stack had already been defined there.
 
-The defined module has a module method `start` that delegates to `Modware::Stack.start`.  Here's an example of using the above stack as a wrapper around ActiveRecord's `index_exists?` method:
+The defined stack module has a module method `start` that delegates to `Modware::Stack.start`.  Here's an example of using the above stack as a wrapper around ActiveRecord's `index_exists?` method:
 
 ```ruby
 module MyClient
@@ -224,7 +224,7 @@ SchemaMonkey uses the module `MyLaterClient::Middleware::Index::Exists` as [modw
 
 Note that the distinguishing feature between defining and using a stack is whether `Env` is defined.
 
-    
+
 
 
 ## Compatibility
@@ -246,8 +246,10 @@ the standard protocol: fork, feature branch, develop, push, and issue pull reque
 
 Some things to know about to help you develop and test:
 
+<!-- SCHEMA_DEV: TEMPLATE USES SCHEMA_DEV - begin -->
+<!-- These lines are auto-inserted from a schema_dev template -->
 * **schema_dev**:  SchemaMonkey uses [schema_dev](https://github.com/SchemaPlus/schema_dev) to
-  facilitate running rspec tests on the matrix of ruby, rails, and database
+  facilitate running rspec tests on the matrix of ruby, activerecord, and database
   versions that the gem supports, both locally and on
   [travis-ci](http://travis-ci.org/SchemaPlus/schema_monkey)
 
@@ -256,8 +258,10 @@ Some things to know about to help you develop and test:
         $ schema_dev bundle install
         $ schema_dev rspec
 
-  You can also run on just one configuration at a time;  For info, see `schema_dev --help` or the
-  [schema_dev](https://github.com/SchemaPlus/schema_dev) README.
+  You can also run on just one configuration at a time;  For info, see `schema_dev --help` or the [schema_dev](https://github.com/SchemaPlus/schema_dev) README.
 
   The matrix of configurations is specified in `schema_dev.yml` in
   the project root.
+
+
+<!-- SCHEMA_DEV: TEMPLATE USES SCHEMA_DEV - end -->

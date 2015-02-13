@@ -1,6 +1,6 @@
 module SchemaMonkey
 
-  # The main manager for the monkey patches.  Singleton instance 
+  # The main manager for the monkey patches.  Singleton instance
   # created by SchemaMonkey.monkey
 
   class Monkey
@@ -11,7 +11,7 @@ module SchemaMonkey
       @clients = []
       @inserted = nil
       @inserted_dbm = nil
-      Module.insert ::ActiveRecord::ConnectionAdapters::AbstractAdapter, SchemaMonkey::ActiveRecord::ConnectionAdapters::AbstractAdapter 
+      Module.insert ::ActiveRecord::ConnectionAdapters::AbstractAdapter, SchemaMonkey::ActiveRecord::ConnectionAdapters::AbstractAdapter
     end
 
     def register(mod)
