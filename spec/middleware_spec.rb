@@ -45,6 +45,14 @@ describe SchemaMonkey::Middleware do
     end
   end
 
+  context "with module but no stack registered" do
+    context "if register client1" do
+      Given { SchemaMonkey::Module.mkpath SchemaMonkey::Middleware, "Group::Stack" }
+      Given { SchemaMonkey.register make_client(1) }
+      Then { expect(insertion).to have_failed(SchemaMonkey::MiddlewareError, /no stack/i) }
+    end
+  end
+
 
   def make_definition
     Module.new.tap(&it.module_eval(<<-END))

@@ -3,8 +3,8 @@ module SchemaMonkey
     def self.insert(path, mod)
       env = Module.const_lookup(mod, "Env") || Module.const_lookup(mod, "ENV")
       return unless env or Modware.is_middleware?(mod)
-      stack = env ? create(path, env) : get(path)
-      stack.stack.add(mod)
+      stack_holder = env ? create(path, env) : get(path)
+      stack_holder.stack.add(mod)
     rescue MiddlewareError => err
       raise MiddlewareError, "#{mod}: #{err.message}"
     end
@@ -12,22 +12,22 @@ module SchemaMonkey
     private
 
     def self.create(path, env)
-      if stack = get(path, err: false)
-        raise MiddlewareError, "stack #{stack} is already defined"
+      if mod = get(path, err: false)
+        raise MiddlewareError, "stack #{mod} is already defined"
       end
-      Module.mkpath(SchemaMonkey::Middleware, path).tap { |stack|
-        stack.send :extend, Stack::StartMethod
-        stack.send :stack=, Modware::Stack.new(env: env)
+      Module.mkpath(SchemaMonkey::Middleware, path).tap { |mod|
+        mod.send :extend, Stack::StackHolder
+        mod.send :stack=, Modware::Stack.new(env: env)
       }
     end
 
     def self.get(path, err: true)
-      stack = Module.const_lookup SchemaMonkey::Middleware, path
-      return stack if stack
+      mod = Module.const_lookup SchemaMonkey::Middleware, path
+      return mod if mod and mod.is_a? Stack::StackHolder
       raise MiddlewareError, "No stack #{SchemaMonkey::Middleware}::#{path}" if err
     end
 
-    module StartMethod
+    module StackHolder
       attr_reader :stack
 
       def start(env, &block)
