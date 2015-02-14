@@ -180,11 +180,13 @@ module MyClient
   module ActiveRecord
     module ConnectionAdapters
       module SchemaStatements
+
         def index_exists?(table_name, column_name, options = {})
           SchemaMonkey::Middleware::Index::Exists.start(connection: self, table_name: table_name, column_name: column_name, options: options) { |env|
             env.result = super env.table_name, env.column_name, env.options
           }.result
         end
+
       end
     end
   end
