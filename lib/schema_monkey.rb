@@ -9,7 +9,6 @@ require_relative "schema_monkey/errors"
 require_relative "schema_monkey/module"
 require_relative "schema_monkey/monkey"
 require_relative "schema_monkey/stack"
-require_relative 'schema_monkey/rake'
 
 #
 # Middleware contents will be created dynamically
