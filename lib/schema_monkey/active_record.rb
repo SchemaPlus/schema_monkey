@@ -3,13 +3,14 @@ module SchemaMonkey
     module ConnectionAdapters
       module AbstractAdapter
         def initialize(*args)
-          super
           dbm = case adapter_name
                 when /^MySQL/i                 then :Mysql
                 when 'PostgreSQL', 'PostGIS'   then :PostgreSQL
                 when 'SQLite'                  then :SQLite3
                 end
           SchemaMonkey.insert(dbm: dbm)
+
+          super
         end
       end
     end
