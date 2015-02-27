@@ -21,14 +21,6 @@ gem "schema_monkey"                 # in a Gemfile
 gem.add_dependency "schema_monkey"  # in a .gemspec
 ```
 
-To use with a rails app, also include
-
-```ruby
-gem "schema_monkey_rails"
-```
-
-which creates a Railtie to insert SchemaMonkey appropriately into the rails stack. To use with Padrino, see [schema_monkey_padrino](https://github.com/SchemaPlus/schema_monkey_padrino).
-
 ## Usage
 
 SchemaMonkey works with the notion of a "client" -- which is a module containining definitions.  A typical SchemaMonkey client looks like
