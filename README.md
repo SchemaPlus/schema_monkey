@@ -54,16 +54,16 @@ of course a typical client will be split into files corresponding to submodules;
 ```ruby
 require 'schema_plus/core'
 
-require_relative 'schema_plus_indexes/active_record/base'
-require_relative 'schema_plus_indexes/active_record/connection_adapters/abstract_adapter'
-require_relative 'schema_plus_indexes/active_record/connection_adapters/index_definition'
+require 'schema_plus/indexes/active_record/base'
+require 'schema_plus/indexes/active_record/connection_adapters/abstract_adapter'
+require 'schema_plus/indexes/active_record/connection_adapters/index_definition'
 
-require_relative 'schema_plus_indexes/middleware/dumper'
-require_relative 'schema_plus_indexes/middleware/migration'
-require_relative 'schema_plus_indexes/middleware/model'
-require_relative 'schema_plus_indexes/middleware/query'
+require 'schema_plus/indexes/middleware/dumper'
+require 'schema_plus/indexes/middleware/migration'
+require 'schema_plus/indexes/middleware/model'
+require 'schema_plus/indexes/middleware/schema'
 
-SchemaMonkey.register SchemaPlusIndexes
+SchemaMonkey.register SchemaPlus::Indexes
 ```
 
 The details of ActiveRecord exentions and Middleware modules are described below.
