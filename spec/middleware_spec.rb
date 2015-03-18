@@ -55,7 +55,7 @@ describe SchemaMonkey::Middleware do
 
 
   def make_definition
-    Module.new.tap(&it.module_eval(<<-END))
+    Module.new.tap{|m| m.module_eval(<<-END) }
       module Middleware
         module Group
           module Stack
@@ -67,7 +67,7 @@ describe SchemaMonkey::Middleware do
   end
 
   def make_client(n)
-    Module.new.tap(&it.module_eval(<<-END))
+    Module.new.tap{|m| m.module_eval(<<-END) }
       module Middleware
         module Group
           module Stack

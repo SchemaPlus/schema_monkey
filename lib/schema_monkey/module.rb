@@ -27,8 +27,8 @@ module SchemaMonkey
     def descendants(mod, can_load: nil)
       consts, auto = mod.constants.group_by{|c| !!mod.autoload?(c)}.values_at(false, true)
       consts ||= []
-      consts += auto.select &it.to_s =~ can_load if can_load and auto
-      children = consts.map{|c| mod.const_get(c) }.select &it.is_a?(::Module)
+      consts += auto.select{|c| c.to_s =~ can_load } if can_load and auto
+      children = consts.map{|c| mod.const_get(c) }.select{|c| c.is_a?(::Module) }
       children + children.flat_map {|c| descendants(c, can_load: can_load) }
     end
 

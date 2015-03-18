@@ -20,7 +20,6 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = ">= 2.1.0"
   spec.add_dependency "activerecord", "~> 4.2"
-  spec.add_dependency "its-it"
   spec.add_dependency "modware", "~> 0.1"
 
   spec.add_development_dependency "bundler", "~> 1.7"

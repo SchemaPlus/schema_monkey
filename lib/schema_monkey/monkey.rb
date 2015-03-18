@@ -23,7 +23,7 @@ module SchemaMonkey
 
     def insert(dbm: nil)
       insert if dbm and not @inserted # first do all non-dbm-specific insertions
-      clients.each &it.insert(dbm: dbm)
+      clients.each{|c| c.insert(dbm: dbm) }
       @inserted = true
       @inserted_dbm = dbm if dbm
     end
