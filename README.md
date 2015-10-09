@@ -232,7 +232,7 @@ SchemaMonkey is tested on:
 <!-- SCHEMA_DEV: MATRIX - end -->
 
 ## Release Notes
-
+* 2.1.2 -- Insert self earlier; don't wait for connection adapter to be instantiated.  Fixes #6 re `db:schema:load`
 * 2.1.1 -- Bug fix: don't choke if a module contains a BasicObject const
 * 2.1.0 -- First version to support all of schema_plus's needs for the 1.8.7 -> 2.0 upgrade
 
