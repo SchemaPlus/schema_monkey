@@ -27,6 +27,7 @@ module SchemaMonkey
 
   def self.register(mod)
     monkey.register(mod)
+    self.insert
   end
 
   def self.insert(opts={})
