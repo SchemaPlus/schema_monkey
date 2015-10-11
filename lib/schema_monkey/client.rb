@@ -3,7 +3,7 @@ module SchemaMonkey
 
     def initialize(mod)
       @root = mod
-      @inserted_middleware = {}
+      @inserted = {}
     end
 
     def insert(dbm: nil)
@@ -16,6 +16,7 @@ module SchemaMonkey
     def insert_active_record(dbm: nil)
       # Kernel.warn "--- inserting active_record for #{@root}, dbm=#{dbm.inspect}"
       find_modules(:ActiveRecord, dbm: dbm).each do |mod|
+        next if @inserted[mod]
         relative_path = canonicalize_path(mod, :ActiveRecord, dbm)
         ActiveRecord.insert(relative_path, mod)
       end
@@ -23,10 +24,10 @@ module SchemaMonkey
 
     def insert_middleware(dbm: nil)
       find_modules(:Middleware, dbm: dbm).each do |mod|
-        next if @inserted_middleware[mod]
+        next if @inserted[mod]
         relative_path = canonicalize_path(mod, :Middleware, dbm)
         Stack.insert(relative_path, mod) unless relative_path.empty?
-        @inserted_middleware[mod] = true
+        @inserted[mod] = true
       end
     end
 
