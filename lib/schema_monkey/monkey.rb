@@ -21,7 +21,7 @@ module SchemaMonkey
 
     def insert(dbm: nil)
       insert if dbm and not @inserted # first do all non-dbm-specific insertions
-      @client_map.values.each &it.insert(dbm: dbm)
+      @client_map.values.each { |it| it.insert(dbm: dbm) }
       @inserted = true
       @inserted_dbm = dbm if dbm
     end

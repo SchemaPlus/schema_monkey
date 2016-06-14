@@ -9,6 +9,7 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
 require 'rspec'
 require 'rspec/given'
+require 'its-it'
 require 'active_record'
 require 'schema_monkey'
 require 'schema_dev/rspec'
