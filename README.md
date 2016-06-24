@@ -234,6 +234,7 @@ SchemaMonkey is tested on:
 <!-- SCHEMA_DEV: MATRIX - end -->
 
 ## Release Notes
+* 2.1.5 -- Remove dependency on its-it :(  #12
 * 2.1.4 -- Loosen dependency to allow AR 5.0, and include it in the test matrix
 * 2.1.3 -- Guard against multiple insertion of modules.
 * 2.1.2 -- Insert self earlier; don't wait for connection adapter to be instantiated.  Fixes #6 re `db:schema:load`
