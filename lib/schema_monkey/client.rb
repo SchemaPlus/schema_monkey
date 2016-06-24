@@ -35,7 +35,7 @@ module SchemaMonkey
       path = mod.to_s.sub(/^#{@root}::#{base}::/, '')
       if dbm
         path = path.split('::')
-        if (i = path.find_index(&it =~ /\b#{dbm}\b/i)) # delete first occurence
+        if (i = path.find_index { |it| it =~ /\b#{dbm}\b/i }) # delete first occurence
           path.delete_at i
         end
         path = path.join('::').gsub(/#{dbm}/i, dbm.to_s) # canonicalize case for things like PostgreSQLAdapter
@@ -56,8 +56,8 @@ module SchemaMonkey
 
       modules = []
       modules += Module.descendants(container, can_load: accept)
-      modules.select!(&it.to_s =~ accept) if accept
-      modules.reject!(&it.to_s =~ reject) if reject
+      modules.select! { |it| it.to_s =~ accept } if accept
+      modules.reject! { |it| it.to_s =~ reject } if reject
       modules
     end
 

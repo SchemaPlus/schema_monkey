@@ -1,6 +1,5 @@
 require 'active_record'
 require 'active_support/core_ext/string'
-require 'its-it'
 require 'modware'
 
 require_relative "schema_monkey/active_record"
