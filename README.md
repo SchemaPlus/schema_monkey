@@ -80,7 +80,7 @@ module PracticalJoker
     module Base
 
        def save(*args)
-         raise "April Fools!" if Time.now.yday == 31
+         raise "April Fools!" if Time.now.yday == 91
          super
        end
 
