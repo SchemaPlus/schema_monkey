@@ -214,7 +214,7 @@ end
 SchemaMonkey.register(UColumnImpliesUnique)
 ```
 
-SchemaMonkey uses the module `MyLaterClient::Middleware::Index::Exists` as [modware](https://github.com/ronen/modware) middleware for the corresponding stack.  The middleware module can define middleware methods `before`, `arround`, `after`, or `implementation` as per [modware](https://github.com/ronen/modware)
+SchemaMonkey uses the module `MyLaterClient::Middleware::Index::Exists` as [modware](https://github.com/ronen/modware) middleware for the corresponding stack.  The middleware module can define middleware methods `before`, `arround`, `after`, or `implement` as per [modware](https://github.com/ronen/modware)
 
 Note that the distinguishing feature between defining and using a stack is whether `Env` is defined.
 
