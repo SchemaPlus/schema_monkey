@@ -12,7 +12,7 @@ describe SchemaMonkey::Middleware do
 
     context "when start with inline implementation" do
 
-      When(:env) { SchemaMonkey::Middleware::Group::Stack.start result: [] { |env| env.result << :inline } }
+      When(:env) { SchemaMonkey::Middleware::Group::Stack.start(result: []) { |env| env.result << :inline } }
 
       Then { expect(env.result).to eq [:inline] }
 
