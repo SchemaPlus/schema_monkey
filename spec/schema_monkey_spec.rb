@@ -3,7 +3,7 @@ require 'spec_helper'
 describe SchemaMonkey do
 
   it "doesn't register same client's middleware twice" do
-    base = Module.new.tap(&it.module_eval(<<-END))
+    base = Module.new.tap { |e| e.module_eval(<<-END) }
       module Middleware
         module Group
           module Stack
@@ -12,7 +12,7 @@ describe SchemaMonkey do
         end
       end
     END
-    mod = Module.new.tap(&it.module_eval(<<-END))
+    mod = Module.new.tap { |e| e.module_eval(<<-END) }
       module Middleware
         module Group
           module Stack
@@ -33,7 +33,7 @@ describe SchemaMonkey do
   end
 
   it "doesn't register same client's ActiveRecord extensions twice" do
-    mod = Module.new.tap(&it.module_eval(<<-END))
+    mod = Module.new.tap{ |e| e.module_eval(<<-END) }
       module ActiveRecord
         module Base
           def monkey_test

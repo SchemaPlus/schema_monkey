@@ -9,7 +9,6 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
 require 'rspec'
 require 'rspec/given'
-require 'its-it'
 require 'active_record'
 require 'schema_monkey'
 require 'schema_dev/rspec'
@@ -26,4 +25,3 @@ RSpec.configure do |config|
 end
 
 SimpleCov.command_name "[ruby #{RUBY_VERSION} - ActiveRecord #{::ActiveRecord::VERSION::STRING} - #{ActiveRecord::Base.connection.adapter_name}]"
-
