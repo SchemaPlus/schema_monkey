@@ -1,8 +1,5 @@
 require 'simplecov'
-require 'simplecov-gem-profile'
-SimpleCov.start "gem" do
-  add_filter "/tasks/"
-end
+SimpleCov.start
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
@@ -12,6 +9,16 @@ require 'rspec/given'
 require 'active_record'
 require 'schema_monkey'
 require 'schema_dev/rspec'
+
+def create_database
+  config = SchemaDev::Rspec.db_configuration
+
+  return if config['host'].nil?
+
+  ActiveRecord::Tasks::DatabaseTasks.create(config)
+end
+
+create_database
 
 SchemaDev::Rspec.setup
 
