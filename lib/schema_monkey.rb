@@ -30,7 +30,7 @@ module SchemaMonkey
   end
 
   def self.insert(opts={})
-    monkey.insert(opts)
+    monkey.insert(**opts)
   end
 
   private
