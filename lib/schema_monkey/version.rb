@@ -1,3 +1,3 @@
 module SchemaMonkey
-  VERSION = "2.1.6"
+  VERSION = "3.0.0"
 end

@@ -238,6 +238,8 @@ SchemaMonkey is tested on:
 <!-- SCHEMA_DEV: MATRIX - end -->
 
 ## Release Notes
+
+* 3.0.0 -- updated to support ruby 2.5+ only and rails 5.2 through 6.1
 * 2.1.6 -- stricter dependency on modware
 * 2.1.5 -- Remove dependency on its-it :(  #12
 * 2.1.4 -- Loosen dependency to allow AR 5.0, and include it in the test matrix
