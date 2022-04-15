@@ -239,6 +239,7 @@ SchemaMonkey is tested on:
 
 ## Release Notes
 
+* 3.0.1 -- Use modware 1.0.1
 * 3.0.0 -- updated to support ruby 2.5+ only and rails 5.2 through 6.1
 * 2.1.6 -- stricter dependency on modware
 * 2.1.5 -- Remove dependency on its-it :(  #12
