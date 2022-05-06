@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SchemaMonkey
   module Stack
     def self.insert(path, mod)

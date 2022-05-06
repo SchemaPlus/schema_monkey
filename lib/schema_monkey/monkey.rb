@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SchemaMonkey
 
   # The main manager for the monkey patches.  Singleton instance
