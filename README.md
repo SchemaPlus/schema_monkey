@@ -232,8 +232,13 @@ SchemaMonkey is tested on:
 * ruby **2.7** with activerecord **5.2**, using **mysql2**, **sqlite3** or **postgresql:9.6**
 * ruby **2.7** with activerecord **6.0**, using **mysql2**, **sqlite3** or **postgresql:9.6**
 * ruby **2.7** with activerecord **6.1**, using **mysql2**, **sqlite3** or **postgresql:9.6**
+* ruby **2.7** with activerecord **7.0**, using **mysql2**, **sqlite3** or **postgresql:9.6**
 * ruby **3.0** with activerecord **6.0**, using **mysql2**, **sqlite3** or **postgresql:9.6**
 * ruby **3.0** with activerecord **6.1**, using **mysql2**, **sqlite3** or **postgresql:9.6**
+* ruby **3.0** with activerecord **7.0**, using **mysql2**, **sqlite3** or **postgresql:9.6**
+* ruby **3.1** with activerecord **6.0**, using **mysql2**, **sqlite3** or **postgresql:9.6**
+* ruby **3.1** with activerecord **6.1**, using **mysql2**, **sqlite3** or **postgresql:9.6**
+* ruby **3.1** with activerecord **7.0**, using **mysql2**, **sqlite3** or **postgresql:9.6**
 
 <!-- SCHEMA_DEV: MATRIX - end -->
 
