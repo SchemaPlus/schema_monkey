@@ -244,15 +244,16 @@ SchemaMonkey is tested on:
 
 ## Release Notes
 
-* 3.0.1 -- Use modware 1.0.1
-* 3.0.0 -- updated to support ruby 2.5+ only and rails 5.2 through 6.1
-* 2.1.6 -- stricter dependency on modware
-* 2.1.5 -- Remove dependency on its-it :(  #12
-* 2.1.4 -- Loosen dependency to allow AR 5.0, and include it in the test matrix
-* 2.1.3 -- Guard against multiple insertion of modules.
-* 2.1.2 -- Insert self earlier; don't wait for connection adapter to be instantiated.  Fixes #6 re `db:schema:load`
-* 2.1.1 -- Bug fix: don't choke if a module contains a BasicObject const
-* 2.1.0 -- First version to support all of schema_plus's needs for the 1.8.7 -> 2.0 upgrade
+* **3.0.2** -- Add AR 7.0 and Ruby 3.1
+* **3.0.1** -- Use modware 1.0.1
+* **3.0.0** -- updated to support ruby 2.5+ only and rails 5.2 through 6.1
+* **2.1.6** -- stricter dependency on modware
+* **2.1.5** -- Remove dependency on its-it :(  #12
+* **2.1.4** -- Loosen dependency to allow AR 5.0, and include it in the test matrix
+* **2.1.3** -- Guard against multiple insertion of modules.
+* **2.1.2** -- Insert self earlier; don't wait for connection adapter to be instantiated.  Fixes #6 re `db:schema:load`
+* **2.1.1** -- Bug fix: don't choke if a module contains a BasicObject const
+* **2.1.0** -- First version to support all of schema_plus's needs for the 1.8.7 -> 2.0 upgrade
 
 
 ## Development & Testing
